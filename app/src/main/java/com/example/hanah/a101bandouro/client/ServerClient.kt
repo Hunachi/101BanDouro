@@ -4,9 +4,11 @@ package com.example.hanah.a101bandouro.client
  * Created by hanah on 2017/11/11.
  */
 import android.graphics.Point
+import com.example.hanah.a101bandouro.model.Result
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.reactivex.Observable
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -17,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
+import java.util.*
 
 /**
  * Created by hanah on 2017/11/11.
@@ -38,18 +41,18 @@ class ServerClient(key: String = "") {
         httpCliet.addInterceptor(logging)
 
         val retrofit = Retrofit.Builder()
-                .baseUrl("api.ekispert.jp")
+                .baseUrl("https://api.ekispert.jp")
                 .addConverterFactory(StringConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
         server = retrofit.create(Server::class.java)
     }
 
-    fun findStation(key: String, getPoint: String) = server.findStations()
+    fun findStation(key: String, geoPoint: String): Observable<Result> = server.findStations(key, geoPoint)
 
-    fun findStation(key: String, x: Double, y: Double)
-            = findStation(key, x.toString() + "." + y.toString())
+    fun findStation(x: Double, y: Double)
+            = findStation(key, x.toString() + "," + y.toString())
 
     private class StringConverterFactory : Converter.Factory() {
 

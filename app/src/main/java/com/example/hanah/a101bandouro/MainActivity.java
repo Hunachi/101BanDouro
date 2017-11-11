@@ -16,6 +16,9 @@ import android.widget.Toast;
 import android.Manifest;
 public class MainActivity extends AppCompatActivity implements LocationListener {
     private LocationManager locationManager;
+    private String nowStationName = "po";
+    private TextView textView1;
+    private TextView textView2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         } else {
             locationStart();
         }
+        textView1 = findViewById(R.id.text_view1);
+        textView2 = findViewById(R.id.text_view2);
     }
     private void locationStart() {
         Log.d("debug", "locationStart()");
@@ -79,12 +84,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         // 緯度の表示
-        TextView textView1 = (TextView) findViewById(R.id.text_view1);
         textView1.setText("Latitude(緯度):" + location.getLatitude());
         // 経度の表示
-        TextView textView2 = (TextView) findViewById(R.id.text_view2);
         textView2.setText("Longitude(経度):" + location.getLongitude());
     }
+
     @Override
     public void onProviderEnabled(String provider) {
     }

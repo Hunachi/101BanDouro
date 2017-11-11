@@ -4,6 +4,10 @@ package com.example.hanah.a101bandouro.model
  * Created by hanah on 2017/11/11.
  */
 
+data class Result(
+        val ResultSet: ResultSet
+)
+
 data class ResultSet(
         val apiVersion: String,
         val engineVersion: String,
