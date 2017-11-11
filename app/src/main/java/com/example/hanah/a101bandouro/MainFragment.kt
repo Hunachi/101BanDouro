@@ -64,11 +64,10 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
                     if (station != newStation) {
                         station = newStation
                         getData(station = newStation, tasteful = tasteful)
-                    }else{
-                        getData("", tasteful)
                     }
                 }, {
-                    getData("", tasteful)
+                    if(station.isNotBlank())getData("", tasteful)
+                    station = ""
                     it.printStackTrace()
                 })
     }
