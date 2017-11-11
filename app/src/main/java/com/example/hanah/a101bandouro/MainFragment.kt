@@ -60,9 +60,9 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
         super.onActivityCreated(savedInstanceState)
     }
 
-    fun getNearStation(pointX: Double, pointY: Double) {
+    fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         var newStation: String
-        val client = ServerClient("eBBWPyXMYduCN759")
+        val client = ServerClient("")
         client
                 .findStation(pointX, pointY)
                 .subscribeOn(Schedulers.io())
@@ -73,43 +73,31 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
                     Log.d("近くの駅", newStation)
                     if (station != newStation) {
                         station = newStation
-                        getData(station = newStation)
+                        getData(station = newStation, tasteful = tasteful)
                     }
                 }, {
                     it.printStackTrace()
                 })
     }
 
-    fun getData(station: String) {
-        val file = NCMBFile(station + "2" + ".wav")
+    fun getData(station: String, tasteful: Int) {
+        val file = NCMBFile(station + tasteful.toString() + ".mp3")
         file.fetchInBackground(FetchFileCallback() { bytes: ByteArray?, ncmbException: NCMBException? ->
 
-            /*if (bytes != null) {
-                audioTrack = AudioTrack(
-                        AudioManager.STREAM_MUSIC,
-                        22050,
-                        AudioFormat.CHANNEL_OUT_MONO,
-                        AudioFormat.ENCODING_PCM_16BIT,
-                        bytes.size,
-                        AudioTrack.MODE_STREAM
-                )
-                audioTrack?.write(bytes, 0, bytes.size)
-                if (audioTrack != null) audioTrack?.play()
-            }
-
-*/
-            /*val tempMp3 = File.createTempFile(station, ".mp3", contexts.cacheDir)
+            val tempMp3 = File.createTempFile(station + "hogehoge", ".mp3", contexts.cacheDir)
             tempMp3.deleteOnExit()
-            FileOutputStream(tempMp3).run {
-                write(bytes)
-                close()
-            }
+            val fos = FileOutputStream(tempMp3)
+            fos.write(bytes)
+            fos.close()
+            mediaPlayer = MediaPlayer()
+
             mediaPlayer.reset()
             mediaPlayer.setDataSource(
                     FileInputStream(tempMp3).fd
             )
+            mediaPlayer.isLooping = true
             mediaPlayer.prepare()
-            mediaPlayer.start()*/
+            mediaPlayer.start()
 
         })
     }

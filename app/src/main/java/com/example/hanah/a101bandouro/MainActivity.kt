@@ -16,11 +16,12 @@ import android.util.Log
 import android.widget.Toast
 import android.Manifest
 import android.content.Context
+import android.media.MediaPlayer
 
 import com.nifty.cloud.mb.core.NCMB
 
 class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback {
-
+    private lateinit var mediaPlayer: MediaPlayer
     private var locationManager: LocationManager? = null
     private var fragment: MainFragment? = null
     private val nowStationName = "po"
@@ -38,6 +39,8 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
                 "4bf00452b48657802fb11f962c23564281cf5abd3ef0bb2483104378dda55441",
                 "4b020547b0b0803b9136c1a84c5c62d48659a142fa16c9a3f43a567e50b0e270"
         )
+
+
 
         //fragment
         fragment = MainFragment(this, this)
@@ -68,7 +71,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             Log.d("debug", "checkSelfPermission false")
             return
         }
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30, 80f, this)
     }
 
     // 結果の受け取り
@@ -96,11 +99,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     }
 
     override fun onLocationChanged(location: Location) {
-        // 緯度の表示
-        textView1!!.text = "Latitude(緯度):" + location.latitude
-        // 経度の表示
-        textView2!!.text = "Longitude(経度):" + location.longitude
-        fragment!!.getNearStation(/*location.longitude*/35.6783055555, /*location.latitude*/139.77044166)
+        fragment!!.getNearStation(/*location.longitude*/35.6783055555, /*location.latitude*/139.77044166, 1)//todo
     }
 
     override fun onProviderEnabled(provider: String) {}
