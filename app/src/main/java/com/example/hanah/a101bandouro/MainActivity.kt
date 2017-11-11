@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     }
 
     override fun onLocationChanged(location: Location) {
-        fragment!!.getNearStation(/*location.longitude*/35.6783055555, /*location.latitude*/139.77044166, 1)//todo
+        fragment!!.getNearStation(location.longitude/*35.6783055555*/, location.latitude/*139.77044166*/, 1)//todo
     }
 
     override fun onProviderEnabled(provider: String) {}

@@ -68,6 +68,7 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
                         getData("", tasteful)
                     }
                 }, {
+                    getData("", tasteful)
                     it.printStackTrace()
                 })
     }
