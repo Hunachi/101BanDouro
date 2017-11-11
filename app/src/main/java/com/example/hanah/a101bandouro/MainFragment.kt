@@ -43,16 +43,6 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
         super.onCreate(savedInstanceState)
         mediaPlayer = MediaPlayer()
         val file = NCMBFile(station + "2" + ".wav")
-        file.fetchInBackground(FetchFileCallback() { bytes: ByteArray, ncmbException: NCMBException? ->
-            audioTrack = AudioTrack(
-                    AudioManager.STREAM_MUSIC,
-                    22050,
-                    AudioFormat.CHANNEL_OUT_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT,
-                    bytes.size,
-                    AudioTrack.MODE_STREAM
-            )
-        })
         Log.d("hoge", "hoge")
     }
 
@@ -62,7 +52,7 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         var newStation: String
-        val client = ServerClient("")
+        val client = ServerClient("eBBWPyXMYduCN759")
         client
                 .findStation(pointX, pointY)
                 .subscribeOn(Schedulers.io())
@@ -74,6 +64,8 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
                     if (station != newStation) {
                         station = newStation
                         getData(station = newStation, tasteful = tasteful)
+                    }else{
+                        getData("", tasteful)
                     }
                 }, {
                     it.printStackTrace()
@@ -81,7 +73,11 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
     }
 
     fun getData(station: String, tasteful: Int) {
-        val file = NCMBFile(station + tasteful.toString() + ".mp3")
+        val file =if(station.isBlank()){
+            NCMBFile( "さんぽ.mp3")
+        }else{
+            NCMBFile(station + tasteful.toString() + ".mp3")
+        }
         file.fetchInBackground(FetchFileCallback() { bytes: ByteArray?, ncmbException: NCMBException? ->
 
             val tempMp3 = File.createTempFile(station + "hogehoge", ".mp3", contexts.cacheDir)
