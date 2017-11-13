@@ -37,3 +37,8 @@ data class Station(
         val Yomi: String,
         val Type: String
 )
+
+data class MemoryItem(
+        val id: Int,
+        val stationName: String
+)

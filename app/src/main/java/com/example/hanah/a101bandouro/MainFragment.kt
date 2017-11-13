@@ -22,6 +22,7 @@ import java.io.IOException
 import android.R.raw
 import android.content.Context
 import io.reactivex.Single
+import java.security.Key
 
 
 @SuppressLint("ValidFragment")
@@ -30,7 +31,7 @@ import io.reactivex.Single
  */
 class MainFragment(val callback: Callback, context: Context) : android.support.v4.app.Fragment() {
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = ""
     private var audioTrack: AudioTrack? = null
     private var contexts = context
@@ -41,7 +42,6 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mediaPlayer = MediaPlayer()
         val file = NCMBFile(station + "2" + ".wav")
         Log.d("hoge", "hoge")
     }
@@ -52,7 +52,7 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         var newStation: String
-        val client = ServerClient("eBBWPyXMYduCN759")
+        val client = ServerClient(com.example.hanah.a101bandouro.model.Key.eki)
         client
                 .findStation(pointX, pointY)
                 .subscribeOn(Schedulers.io())
@@ -60,42 +60,59 @@ class MainFragment(val callback: Callback, context: Context) : android.support.v
                 .subscribe({
                     newStation = it.ResultSet.Point.Station.Name
                     callback.setText(newStation)
-                    Log.d("近くの駅", newStation)
+                    Log.d("近くの駅", newStation + tasteful.toString())
                     if (station != newStation) {
-                        station = newStation
-                        getData(station = newStation, tasteful = tasteful)
+                        if (tasteful == 4) {
+                            getData("", tasteful)
+                        } else {
+                            station = newStation
+                            getData(station = newStation, tasteful = tasteful)
+                        }
                     }
                 }, {
-                    if(station.isNotBlank())getData("", tasteful)
+                    getData("", tasteful)
                     station = ""
                     it.printStackTrace()
                 })
     }
 
     fun getData(station: String, tasteful: Int) {
-        val file =if(station.isBlank()){
-            NCMBFile( "さんぽ.mp3")
-        }else{
+        val file = if (station.isBlank()) {
+            NCMBFile("さんぽ.mp3")
+        } else {
             NCMBFile(station + tasteful.toString() + ".mp3")
         }
         file.fetchInBackground(FetchFileCallback() { bytes: ByteArray?, ncmbException: NCMBException? ->
 
-            val tempMp3 = File.createTempFile(station + "hogehoge", ".mp3", contexts.cacheDir)
+            val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", contexts.cacheDir)
             tempMp3.deleteOnExit()
             val fos = FileOutputStream(tempMp3)
             fos.write(bytes)
             fos.close()
-            mediaPlayer = MediaPlayer()
 
+            //mediaPlayer = MediaPlayer()
+
+            mediaPlayer.stop()
             mediaPlayer.reset()
-            mediaPlayer.setDataSource(
-                    FileInputStream(tempMp3).fd
-            )
-            mediaPlayer.isLooping = true
-            mediaPlayer.prepare()
-            mediaPlayer.start()
+            Single.fromCallable {
+                mediaPlayer.setDataSource(
+                        FileInputStream(tempMp3).fd
+                )
+                mediaPlayer.isLooping = true
+                mediaPlayer.prepare()
+            }.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        mediaPlayer.start()
+                    }, {
+
+                    })
 
         })
+    }
+
+    fun stopMusic() {
+        if (mediaPlayer.isPlaying) mediaPlayer.pause()
     }
 
     fun changeTasteful(tasteful: Int) {
