@@ -5,13 +5,10 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.hanah.a101bandouro.databinding.FragmentItemBinding
 import com.example.hanah.a101bandouro.databinding.FragmentItemListBinding
 import com.nifty.cloud.mb.core.FetchFileCallback
 import com.nifty.cloud.mb.core.NCMBException
@@ -21,9 +18,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 
-@SuppressLint("ValidFragment")
-class ItemFragment(context: Context) : Fragment() {
-    private lateinit var listAdapter: MyItemRecyclerViewAdapter
+class ItemFragment : Fragment() {
+    private lateinit var listAdapter: ItemListAdapter
     private var list = mutableListOf<String>()
     private lateinit var binding: FragmentItemListBinding
 
@@ -36,7 +32,7 @@ class ItemFragment(context: Context) : Fragment() {
         binding = FragmentItemListBinding.inflate(inflater, container, false)
         setList()
         var mediaPlayer = MediaPlayer()
-        listAdapter = MyItemRecyclerViewAdapter(context, list, { posision ->
+        listAdapter = ItemListAdapter(context, list, { posision ->
             val file = if (posision > 5) {
                 NCMBFile("さんぽ.mp3")
             } else {
@@ -44,25 +40,28 @@ class ItemFragment(context: Context) : Fragment() {
             }
             file.fetchInBackground(FetchFileCallback() { bytes: ByteArray?, ncmbException: NCMBException? ->
 
-                val tempMp3 = File.createTempFile(posision.toString() + "hogehogehoge", ".mp3", context.cacheDir)
-                tempMp3.deleteOnExit()
-                val fos = FileOutputStream(tempMp3)
-                fos.write(bytes)
-                fos.close()
-                mediaPlayer = MediaPlayer()
+                if (!mediaPlayer.isPlaying) {
+                    val tempMp3 = File.createTempFile(posision.toString() + "hogehogehoge", ".mp3", context.cacheDir)
+                    tempMp3.deleteOnExit()
+                    val fos = FileOutputStream(tempMp3)
+                    fos.write(bytes)
+                    fos.close()
+                    mediaPlayer = MediaPlayer()
 
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(
-                        FileInputStream(tempMp3).fd
-                )
-                mediaPlayer.isLooping = true
-                mediaPlayer.prepare()
-                mediaPlayer.start()
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(
+                            FileInputStream(tempMp3).fd
+                    )
+                    //mediaPlayer.isLooping = true
+                    mediaPlayer.prepare()
+                    mediaPlayer.start()
 
+                }
             })
         })
         binding.list.adapter = listAdapter
         binding.list.layoutManager = LinearLayoutManager(binding.list.context)
+        listAdapter.notifyItemMoved(0, list.size)
         return binding.root
     }
 
@@ -73,25 +72,15 @@ class ItemFragment(context: Context) : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
-
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
-        }
     }
 
     override fun onDetach() {
         super.onDetach()
     }
 
-    interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: MutableList<String>)
-    }
-
     companion object {
-
-        fun newInstance(context: Context): ItemFragment {
-            val fragment = ItemFragment(context = context)
+        fun newInstance(): ItemFragment {
+            val fragment = ItemFragment()
             val args = Bundle()
             fragment.arguments = args
             return fragment

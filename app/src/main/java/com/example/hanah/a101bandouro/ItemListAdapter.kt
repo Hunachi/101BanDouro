@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class MyItemRecyclerViewAdapter(private val context: Context, private val list: List<String>, private val callback: (Int) -> Unit)
-    : RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder>() {
+class ItemListAdapter(private val context: Context, private val list: List<String>, private val callback: (Int) -> Unit)
+    : RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
 
     override fun getItemCount() = list.size
 
