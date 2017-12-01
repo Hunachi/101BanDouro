@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.example.hanah.a101bandouro.databinding.ActivityListBinding
 
 /**
@@ -16,9 +17,10 @@ class ListActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState, persistentState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list)
 
+        Log.d("ListActivity","hoge")
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment, ItemFragment(this))
+                .add(binding.listFragment.id, ItemFragment.newInstance())
                 .commit()
     }
 }
