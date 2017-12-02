@@ -88,7 +88,9 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         }
 
         binding.memoryButton.setOnClickListener {
-            startActivity(Intent(this@MainActivity, ListActivity::class.java))
+            startActivity(Intent(this, ListActivity::class.java))
+            Log.d("ListActivity","hoge")
+            finish()
         }
 
         binding.downButton.setOnClickListener {
