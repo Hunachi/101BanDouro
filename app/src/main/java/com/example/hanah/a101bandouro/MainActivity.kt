@@ -23,6 +23,7 @@ import android.view.View
 import android.widget.Button
 import android.annotation.SuppressLint
 import android.databinding.DataBindingUtil
+import android.graphics.Color
 import android.widget.ImageButton
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
 import com.example.hanah.a101bandouro.model.Key
@@ -42,7 +43,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
         //first setting
         NCMB.initialize(
                 this,
