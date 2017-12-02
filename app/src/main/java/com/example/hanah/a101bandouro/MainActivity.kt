@@ -32,14 +32,9 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     private lateinit var mediaPlayer: MediaPlayer
     private var locationManager: LocationManager? = null
     private var fragment: MainFragment? = null
-    /*private var textView1: TextView? = null
-    private var textView2: TextView? = null
-    private lateinit var stationText: TextView
-    private lateinit var detailText: TextView*/
     private var count = 2
     private var playable = true
     private var musicSize = 4
-    private var nowStation = ""
     private var point = Pair(0.0, 0.0)
     private var detaillist: MutableList<String> = mutableListOf()
     private lateinit var memoryButton: ImageButton
@@ -47,8 +42,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         //first setting
@@ -61,13 +54,10 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         //fragment
         fragment = MainFragment(this, this)
 
-
         //現在地取得permission確認
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
         }
-
-
 
         binding.start.setOnClickListener {
             if (playable) {
@@ -89,7 +79,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
 
         binding.memoryButton.setOnClickListener {
             startActivity(Intent(this, ListActivity::class.java))
-            Log.d("ListActivity","hoge")
             finish()
         }
 

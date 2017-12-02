@@ -30,7 +30,7 @@ class ItemFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding = FragmentItemListBinding.inflate(inflater, container, false)
-        setList()
+        /*setList()
         var mediaPlayer = MediaPlayer()
         listAdapter = ItemListAdapter(context, list, { posision ->
             val file = if (posision > 5) {
@@ -61,7 +61,7 @@ class ItemFragment : Fragment() {
         })
         binding.list.adapter = listAdapter
         binding.list.layoutManager = LinearLayoutManager(binding.list.context)
-        listAdapter.notifyItemMoved(0, list.size)
+        listAdapter.notifyItemMoved(0, list.size)*/
         return binding.root
     }
 

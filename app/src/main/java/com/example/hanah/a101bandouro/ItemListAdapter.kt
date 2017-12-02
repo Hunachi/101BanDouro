@@ -7,8 +7,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.hanah.a101bandouro.model.MemoryItem
 
-class ItemListAdapter(private val context: Context, private val list: List<String>, private val callback: (Int) -> Unit)
+class ItemListAdapter(private val context: Context, private val list: MutableList<MemoryItem>, private val callback: (Int) -> Unit)
     : RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
 
     override fun getItemCount() = list.size
