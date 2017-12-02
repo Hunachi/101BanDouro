@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     private var musicSize = 4
     private var point = Pair(0.0, 0.0)
     private var detaillist: MutableList<String> = mutableListOf()
-    private lateinit var memoryButton: ImageButton
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +77,8 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         }
 
         binding.memoryButton.setOnClickListener {
-            startActivity(Intent(this, ListActivity::class.java))
-            finish()
+            val intent = Intent(this, ListActivity::class.java)
+            startActivity(intent)
         }
 
         binding.downButton.setOnClickListener {

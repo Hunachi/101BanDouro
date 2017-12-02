@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro
+package com.example.hanah.a101bandouro.Adapter
 
 import android.content.Context
 import android.databinding.DataBindingUtil
@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.hanah.a101bandouro.BR
+import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.model.MemoryItem
 
 class ItemListAdapter(private val context: Context, private val list: MutableList<MemoryItem>, private val callback: (Int) -> Unit)
@@ -25,7 +27,7 @@ class ItemListAdapter(private val context: Context, private val list: MutableLis
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.setVariable(BR.viewModel, list)
+        holder.binding.setVariable(BR.viewModel, list[position])
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {

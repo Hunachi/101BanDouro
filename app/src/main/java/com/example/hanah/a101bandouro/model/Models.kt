@@ -39,6 +39,6 @@ data class Station(
 )
 
 data class MemoryItem(
-        val id: Int,
-        val stationName: String
+        var id: Int = 0,
+        var stationName: String = "hoge"
 )

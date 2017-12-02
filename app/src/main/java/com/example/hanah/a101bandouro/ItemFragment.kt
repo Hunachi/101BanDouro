@@ -1,21 +1,13 @@
 package com.example.hanah.a101bandouro
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.hanah.a101bandouro.Adapter.ItemListAdapter
 import com.example.hanah.a101bandouro.databinding.FragmentItemListBinding
-import com.nifty.cloud.mb.core.FetchFileCallback
-import com.nifty.cloud.mb.core.NCMBException
-import com.nifty.cloud.mb.core.NCMBFile
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 
 
 class ItemFragment : Fragment() {
