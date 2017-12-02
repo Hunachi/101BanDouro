@@ -26,11 +26,9 @@ class ListActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list)
-
-        Log.d("hoge","hoge")
-
-        list.add(MemoryItem(0,""))
+        list.add(MemoryItem(0,"さんぽ"))
 
         var mediaPlayer = MediaPlayer()
         val listAdapter = ItemListAdapter(this, list, { posision ->

@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     }
 
     private fun locationStart() {
-        Log.d("debug", "locationStart()")
+
         // LocationManager インスタンス生成
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -117,13 +117,9 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             // GPSを設定するように促す
             val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(settingsIntent)
-            Log.d("debug", "not gpsEnable, startActivity")
-        } else {
-            Log.d("debug", "gpsEnabled")
         }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-            Log.d("debug", "checkSelfPermission false")
             return
         }
         locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
@@ -134,7 +130,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         if (requestCode == 1000) {
             // 使用が許可された
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("debug", "checkSelfPermission true")
                 locationStart()
                 return
             } else {
