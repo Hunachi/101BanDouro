@@ -1,5 +1,8 @@
 package com.example.hanah.a101bandouro
 
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import android.databinding.DataBindingUtil
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -54,7 +57,6 @@ class ListActivity: AppCompatActivity() {
                     //mediaPlayer.isLooping = true
                     mediaPlayer.prepare()
                     mediaPlayer.start()
-
                 }
             })
         })
