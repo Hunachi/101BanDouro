@@ -58,19 +58,26 @@ class DatabaseModel(context: Context) {
         } else true
     }
 
-    fun getTunes(): MutableList<String> {
-        return readCursor(
-                db.query(
-                        DataBaseContract.TABLE_NAME,
-                        arrayOf("_id", DataBaseContract.MY_TUNES),
-                        null,
-                        null,
-                        null,
-                        null,
-                        "_id desc",
-                        null
-                ))
-    }
+    fun onDataSearch(tunesTitle: String): Boolean =
+            if (getTunes().contains(tunesTitle)) {
+                true
+            } else {
+                onTunesInsert(tunesTitle)
+                false
+            }
+
+    fun getTunes(): MutableList<String> =
+            readCursor(
+                    db.query(
+                            DataBaseContract.TABLE_NAME,
+                            arrayOf("_id", DataBaseContract.MY_TUNES),
+                            null,
+                            null,
+                            null,
+                            null,
+                            "_id desc",
+                            null
+                    ))
 
     private fun readCursor(cursor: Cursor): MutableList<String> {
         val list = mutableListOf<String>()
