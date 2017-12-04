@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     private lateinit var mediaPlayer: MediaPlayer
     private var locationManager: LocationManager? = null
     private var fragment: MainFragment? = null
-    private var count = 2
+    private var count = 1
     private var playable = true
     private var musicSize = 4
     private var point = Pair(0.0, 0.0)
@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
                 //locationStart()
                 point = Pair(35.6783055555, 139.77044166)
                 fragment = MainFragment(this, this)
+                fragment!!.stopMusic()
                 fragment!!.getNearStation(point.first, point.second, count)
                 playable = false
             } else {
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             0 -> count = musicSize
             musicSize + 1 -> count = 1
         }
-        if (count != 4) {
+        if (count > 4) {
             binding.counterText.text = count.toString()
         } else {
             binding.counterText.text = "N"
@@ -104,6 +105,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         point = Pair(35.6783055555, 139.77044166)
         if (!playable) {
             fragment = MainFragment(this, this)
+            fragment!!.stopMusic()
             fragment!!.getNearStation(point.first, point.second, count)
         }
     }
@@ -151,7 +153,10 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
 
     override fun onLocationChanged(location: Location) {
         point = Pair(35.6783055555, 139.77044166)
-        fragment!!.getNearStation(/*point.first*/35.6783055555, /*point.second*/139.77044166, 1)
+        //point = Pair(location.latitude, location.altitude)
+        fragment!!.getNearStation(point.first, point.second, 1)
+        count = 1
+        binding.counterText.text = count.toString()
     }
 
     override fun onProviderEnabled(provider: String) {}
@@ -164,16 +169,11 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         } else {
             binding.stationName.text = ""
         }
-        binding.detailText.text = when (count) {
+        if(station == "八王子")binding.detailText.text = when (count) {
             1 -> "「うまるちゃん」\n作品の舞台が八王子メイン"
             2 -> "「SPARK」\n歌手のメンバーのうちの半分が\n八王子出身"
             3 -> "「異邦人」\n歌手が八王子出身。\n八王子の近くで作成"
             else -> "「さんぽ」\n楽しく歩きましょう"
         }
     }
-
-    private fun setTestView() {
-
-    }
-
 }
