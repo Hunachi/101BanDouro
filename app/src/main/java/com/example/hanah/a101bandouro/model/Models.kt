@@ -39,6 +39,5 @@ data class Station(
 )
 
 data class MemoryItem(
-        var id: Int = 0,
-        var stationName: String = "hoge"
+        var tuneName: String = "hoge"
 )

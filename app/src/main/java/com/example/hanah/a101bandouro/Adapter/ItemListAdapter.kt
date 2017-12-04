@@ -11,7 +11,7 @@ import com.example.hanah.a101bandouro.BR
 import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.model.MemoryItem
 
-class ItemListAdapter(private val context: Context, private val list: MutableList<MemoryItem>, private val callback: (Int) -> Unit)
+class ItemListAdapter(private val context: Context, private val list: MutableList<MemoryItem>, private val callback: (String) -> Unit)
     : RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {
 
     override fun getItemCount() = list.size
@@ -21,7 +21,7 @@ class ItemListAdapter(private val context: Context, private val list: MutableLis
                 .inflate(R.layout.fragment_item, parent, false)
         val holder = ViewHolder(view)
         holder.itemView.setOnClickListener {
-            callback(holder.adapterPosition)
+            callback(list[holder.adapterPosition].tuneName)
         }
         return holder
     }

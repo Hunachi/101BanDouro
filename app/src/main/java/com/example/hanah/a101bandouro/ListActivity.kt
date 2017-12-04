@@ -10,11 +10,17 @@ import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.widget.Toast
 import com.example.hanah.a101bandouro.Adapter.ItemListAdapter
 import com.example.hanah.a101bandouro.databinding.ActivityListBinding
 import com.example.hanah.a101bandouro.model.MemoryItem
+import com.example.hanah.a101bandouro.tool.DatabaseModel
 import com.nifty.cloud.mb.core.NCMBException
 import com.nifty.cloud.mb.core.NCMBFile
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -22,33 +28,55 @@ import java.io.FileOutputStream
 /**
  * Created by hanah on 2017/11/12.
  */
-class ListActivity: AppCompatActivity() {
+class ListActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityListBinding
+    private lateinit var binding: ActivityListBinding
     private val list = mutableListOf<MemoryItem>()
+    private val mediaPlayer: MediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list)
-        list.add(MemoryItem(0,"さんぽ"))
+        list.add(MemoryItem("さんぽ"))
+    }
 
-        var mediaPlayer = MediaPlayer()
-        val listAdapter = ItemListAdapter(this, list, { posision ->
-            val file = if (posision > 5) {
+    private fun setTunesList() {
+        val list = mutableListOf<String>()
+        Single.fromCallable {
+            list.addAll(DatabaseModel(this).getTunes())
+        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    setListAdapter(list)
+                }, {
+                    it.printStackTrace()
+                    Toast.makeText(this, "曲の情報がありません", Toast.LENGTH_SHORT).show()
+                })
+    }
+
+    private fun setListAdapter(list: MutableList<String>) {
+
+        val tuneList = mutableListOf<MemoryItem>()
+        tuneList.apply { list.forEach { add(MemoryItem(it)) } }
+        //mediaPlayer = MediaPlayer()
+
+        val listAdapter = ItemListAdapter(this, tuneList, { tuneName ->
+
+            val file = if (tuneName.isBlank()) {
                 NCMBFile("さんぽ.mp3")
             } else {
-                NCMBFile(posision.toString() + ".mp3")
+                NCMBFile(tuneName.toString() + ".mp3")
             }
-            file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
-
+            file.fetchInBackground({ bytes: ByteArray?, _: NCMBException? ->
                 if (!mediaPlayer.isPlaying) {
-                    val tempMp3 = File.createTempFile(posision.toString() + "hogehogehoge", ".mp3", cacheDir)
+                    val tempMp3 = File.createTempFile(tuneName.toString() + "hogehogehoge", ".mp3", cacheDir)
                     tempMp3.deleteOnExit()
                     val fos = FileOutputStream(tempMp3)
                     fos.write(bytes)
                     fos.close()
-                    mediaPlayer = MediaPlayer()
+                    //mediaPlayer = MediaPlayer()
 
                     mediaPlayer.reset()
                     mediaPlayer.setDataSource(
@@ -64,4 +92,5 @@ class ListActivity: AppCompatActivity() {
         binding.list.layoutManager = LinearLayoutManager(binding.list.context)
         listAdapter.notifyItemMoved(0, list.size)
     }
+
 }
