@@ -30,93 +30,87 @@ import com.example.hanah.a101bandouro.model.Key
 
 
 class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback {
-    private lateinit var mediaPlayer: MediaPlayer
     private var locationManager: LocationManager? = null
     private var fragment: MainFragment? = null
     private var count = 1
     private var playable = true
     private var musicSize = 4
-    private var point = Pair(0.0, 0.0)
-    private var detaillist: MutableList<String> = mutableListOf()
+    private var point = Pair(35.6783055555, 139.77044166)
+    private var detaillist: MutableList<Pair<String, MutableList<String>>>
+            = mutableListOf(Pair("", mutableListOf()))//ハッカソンの時間に合わなくて使ってない。
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        //first setting
-        NCMB.initialize(
-                this,
-                Key.nifty.first,
-                Key.nifty.second
-        )
 
-        //fragment
-        fragment = MainFragment(this, this)
+        //ニフクラ ファイルストレージ first setting
+        NCMB.initialize(this, Key.nifty.first, Key.nifty.second)
+
+        fragment = MainFragment()
 
         //現在地取得permission確認
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
         }
 
+        //再生ボタン
         binding.start.setOnClickListener {
-            if (playable) {
-                //start
+            playable = if (playable) {
+                locationStart()
                 binding.start.setImageResource(R.drawable.porse_play)
-                //locationStart()
-                point = Pair(35.6783055555, 139.77044166)
-                fragment = MainFragment(this, this)
-                fragment!!.stopMusic()
-                fragment!!.getNearStation(point.first, point.second, count)
-                playable = false
+                fragment!!.run {
+                    stopMusic()
+                    getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
+                }
+                false
             } else {
                 //stop
-                playable = true
                 binding.start.setImageResource(R.drawable.start_play)
                 locationManager?.removeUpdates(this)
                 fragment!!.stopMusic()
+                true
             }
         }
 
+        //思い出リストへ
         binding.memoryButton.setOnClickListener {
             val intent = Intent(this, ListActivity::class.java)
             startActivity(intent)
         }
 
-        binding.downButton.setOnClickListener {
-            onCount(false)
-        }
-
-        binding.upButton.setOnClickListener {
-            onCount(true)
+        //渋さを変える
+        binding.apply {
+            downButton.setOnClickListener {
+                onCount(false)
+            }
+            upButton.setOnClickListener {
+                onCount(true)
+            }
         }
     }
 
     private fun onCount(up: Boolean) {
         if (up) count++ else count--
-        when (count) {
-            0 -> count = musicSize
-            musicSize + 1 -> count = 1
+        count = when (count) {
+            0 -> musicSize
+            musicSize + 1 -> 1
+            else -> count
         }
-        if (count > 4) {
-            binding.counterText.text = count.toString()
-        } else {
-            binding.counterText.text = "N"
-        }
-        point = Pair(35.6783055555, 139.77044166)
+        binding.counterText.text = if (count > 4) count.toString() else "N"
         if (!playable) {
-            fragment = MainFragment(this, this)
-            fragment!!.stopMusic()
-            fragment!!.getNearStation(point.first, point.second, count)
+            fragment!!.run {
+                stopMusic()
+                getNearStation(point.first, point.second, count)
+            }
         }
     }
 
+    //位置情報の取得
     private fun locationStart() {
-
-        // LocationManager インスタンス生成
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
         if (!gpsEnabled) {
-            // GPSを設定するように促す
             val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(settingsIntent)
         }
@@ -124,7 +118,9 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
             return
         }
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
+        Log.d("location", "changeした！")
+        //locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
+        //todo locationの更新は再生時のみする。
     }
 
     // 結果の受け取り
@@ -135,8 +131,8 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
                 locationStart()
                 return
             } else {
-                // それでも拒否された時の対応
-                val toast = Toast.makeText(this, "これ以上なにもできません", Toast.LENGTH_SHORT)
+                // それでも拒否された時の対応←コピペコードに絶対あるコメントアウト
+                val toast = Toast.makeText(this, "え～", Toast.LENGTH_SHORT)
                 toast.show()
             }
         }
@@ -152,11 +148,10 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     }
 
     override fun onLocationChanged(location: Location) {
-        point = Pair(35.6783055555, 139.77044166)
-        //point = Pair(location.latitude, location.altitude)
-        fragment!!.getNearStation(point.first, point.second, 1)
+        point = Pair(location.latitude, location.altitude)
         count = 1
-        binding.counterText.text = count.toString()
+        fragment!!.getNearStation(point.first, point.second, count)
+        binding.counterText.text = "$count"
     }
 
     override fun onProviderEnabled(provider: String) {}
@@ -169,7 +164,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         } else {
             binding.stationName.text = ""
         }
-        if(station == "八王子")binding.detailText.text = when (count) {
+        if (station == "八王子") binding.detailText.text = when (count) {
             1 -> "「うまるちゃん」\n作品の舞台が八王子メイン"
             2 -> "「SPARK」\n歌手のメンバーのうちの半分が\n八王子出身"
             3 -> "「異邦人」\n歌手が八王子出身。\n八王子の近くで作成"
