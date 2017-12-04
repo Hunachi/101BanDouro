@@ -54,12 +54,8 @@ class DatabaseModel(context: Context) {
         value.put(DataBaseContract.MY_TUNES, tunesTitle)
         val id = db.insert(DataBaseContract.TABLE_NAME, null, value)
         return if (id < 0) {
-            if(db.isOpen)db.close()
             Log.ERROR; false
-        } else {
-            if(db.isOpen)db.close()
-            true
-        }
+        } else true
     }
 
     fun getTunes(): MutableList<String> {
@@ -83,6 +79,7 @@ class DatabaseModel(context: Context) {
             list.add(cursor.getString(it))
         }
         Log.d("list size", list.size.toString())
+        cursor.close()
         return list
     }
 
