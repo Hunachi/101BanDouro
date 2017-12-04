@@ -6,6 +6,7 @@ package com.example.hanah.a101bandouro.client
 import com.example.hanah.a101bandouro.model.Result
 import io.reactivex.Observable
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**

@@ -52,7 +52,7 @@ class ServerClient(key: String = "") {
     fun findStation(key: String, geoPoint: String): Observable<Result> = server.findStations(key, geoPoint)
 
     fun findStation(x: Double, y: Double)
-            = findStation(key, x.toString() + "," + y.toString())
+            = findStation(key, x.toString() + "," + y.toString() )
 
     private class StringConverterFactory : Converter.Factory() {
 

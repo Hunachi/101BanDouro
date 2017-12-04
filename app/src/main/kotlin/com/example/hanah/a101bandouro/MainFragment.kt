@@ -24,23 +24,20 @@ import io.reactivex.Single
 /**
  * Created by hanah on 2017/11/11.
  */
-class MainFragment : android.support.v4.app.Fragment() {
+class MainFragment(val context: Context){
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = ""
-    private var contexts: Context? = null
+    /*private var contexts: Context? = null*/
 
     interface Callback {
-        fun setText(station: String)
+        fun setText(station: String, tuneTitle: String)
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        contexts = context
-    }
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
-        if (context == null) return
+        //i/*f (context == null) return*/
+        Log.d(pointX.toString(), pointY.toString() + "ああーーーーーーーーーーーーー！！")
         var newStation: String
         val client = ServerClient(com.example.hanah.a101bandouro.model.Key.eki)
         client
@@ -49,12 +46,12 @@ class MainFragment : android.support.v4.app.Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     newStation = it.ResultSet.Point.Station.Name
-                    (contexts as MainActivity).setText(newStation)
+                    (context as MainActivity).setText(newStation, "$newStation + $tasteful")
                     Log.d("近くの駅", newStation + tasteful.toString())
                     if (station != newStation) {
                         station = newStation
                         playStationMusic(station = newStation, tasteful = tasteful)
-                        DatabaseModel(context).onDataSearch(station)
+                        DatabaseModel(context).onTunesInsert(station)/*.onDataSearch(station)*/
                     }
                 }, {
                     it.printStackTrace()
@@ -63,19 +60,23 @@ class MainFragment : android.support.v4.app.Fragment() {
     }
 
     private fun playStationMusic(station: String, tasteful: Int) {
-        if (context == null) return
         val file = if (station.isBlank()) {
             NCMBFile("さんぽ.mp3")
         } else {
             NCMBFile(station + tasteful.toString() + ".mp3")
         }
         file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
-            val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", contexts?.cacheDir)
+            if(bytes == null){
+                (context as MainActivity).setText("さんぽ", "さんぽ")
+                Log.d("error", ncmbException.toString())
+                playStationMusic("", 0)
+                return@fetchInBackground
+            }
+            val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context?.cacheDir)
             tempMp3.deleteOnExit()
             val fos = FileOutputStream(tempMp3)
             fos.write(bytes)
             fos.close()
-            //mediaPlayer = MediaPlayer()
             mediaPlayer.stop()
             mediaPlayer.reset()
             Single.fromCallable {
@@ -96,7 +97,7 @@ class MainFragment : android.support.v4.app.Fragment() {
     }
 
     fun stopMusic() {
-        if (context == null) return
+       /* if (context == null) return*/
         if (mediaPlayer.isPlaying) {
             mediaPlayer.pause()
             mediaPlayer.reset()
