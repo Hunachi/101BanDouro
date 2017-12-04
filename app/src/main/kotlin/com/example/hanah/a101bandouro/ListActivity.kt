@@ -43,14 +43,11 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun setTunesList() {
-        val list = mutableListOf<String>()
-        Single.fromCallable {
-            list.addAll(DatabaseModel(this).getTunes())
-        }
+        DatabaseModel(this).readCursor()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    setListAdapter(list)
+                    setListAdapter(it)
                 }, {
                     it.printStackTrace()
                     Toast.makeText(this, "曲の情報がありません", Toast.LENGTH_SHORT).show()

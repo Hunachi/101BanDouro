@@ -6,6 +6,10 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.example.hanah.a101bandouro.model.MemoryItem
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * 🍣 Created by hanah on 2017/12/04.
@@ -26,7 +30,7 @@ class DataBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         val DATABASE_NAME = "101BanDouro.db"
-        val DATABASE_VERSION = 0
+        val DATABASE_VERSION = 1
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -48,6 +52,7 @@ class DatabaseModel(context: Context) {
 
     private val helper: DataBaseHelper = DataBaseHelper(context)
     private val db: SQLiteDatabase = helper.writableDatabase
+    val list = mutableListOf<String>()
 
     fun onTunesInsert(tunesTitle: String): Boolean {
         val value = ContentValues()
@@ -59,35 +64,39 @@ class DatabaseModel(context: Context) {
     }
 
     fun onDataSearch(tunesTitle: String): Boolean =
-            if (getTunes().contains(tunesTitle)) {
+            if (list.contains(tunesTitle)) {
                 true
             } else {
                 onTunesInsert(tunesTitle)
                 false
             }
 
-    fun getTunes(): MutableList<String> =
-            readCursor(
-                    db.query(
-                            DataBaseContract.TABLE_NAME,
-                            arrayOf("_id", DataBaseContract.MY_TUNES),
-                            null,
-                            null,
-                            null,
-                            null,
-                            "_id desc",
-                            null
-                    ))
+    private fun getTunes() =
+            Single.fromCallable {
+                db.query(
+                        DataBaseContract.TABLE_NAME,
+                        arrayOf(DataBaseContract.MY_TUNES),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                )
+            }
 
-    private fun readCursor(cursor: Cursor): MutableList<String> {
-        val list = mutableListOf<String>()
-        cursor.moveToFirst()
-        (1..cursor.count).forEach {
-            list.add(cursor.getString(it))
-        }
-        Log.d("list size", list.size.toString())
-        cursor.close()
-        return list
-    }
-
+    fun readCursor()
+            = getTunes()
+            .map { cursor ->
+                list.clear()
+                cursor.moveToFirst()
+                if (cursor.count > 0) (1..cursor.count).forEach {
+                    list.add(cursor.getString(it))
+                    this.list.clear()
+                    this.list.addAll(list)
+                }
+                Log.d("list size", list.size.toString())
+                cursor.close()
+                list
+            }
 }
