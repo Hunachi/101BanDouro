@@ -31,14 +31,15 @@ import java.io.FileOutputStream
 class ListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityListBinding
-    private val list = mutableListOf<MemoryItem>()
     private val mediaPlayer: MediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list)
-        list.add(MemoryItem("さんぽ"))
+
+        setTunesList()
+
     }
 
     private fun setTunesList() {
