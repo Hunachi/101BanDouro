@@ -30,13 +30,13 @@ import com.example.hanah.a101bandouro.model.Key
 
 
 class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback {
-    private var locationManager: LocationManager? = null
+    private lateinit var locationManager: LocationManager
     private var fragment: MainFragment? = null
     private var count = 1
     private var playable = true
     private var musicSize = 4
     private var point = Pair(35.6783055555, 139.77044166)
-    private var detaillist: MutableList<Pair<String, MutableList<String>>>
+    private var detailList: MutableList<Pair<String, MutableList<String>>>
             = mutableListOf(Pair("", mutableListOf()))//ハッカソンの時間に合わなくて使ってない。
     private lateinit var binding: ActivityMainBinding
 
@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         //ニフクラ ファイルストレージ first setting
         NCMB.initialize(this, Key.nifty.first, Key.nifty.second)
 
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         fragment = MainFragment()
 
         //現在地取得permission確認
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             } else {
                 //stop
                 binding.start.setImageResource(R.drawable.start_play)
-                locationManager?.removeUpdates(this)
+                locationManager.removeUpdates(this)
                 fragment!!.stopMusic()
                 true
             }
@@ -108,8 +109,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
 
     //位置情報の取得
     private fun locationStart() {
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gpsEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         if (!gpsEnabled) {
             val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(settingsIntent)
@@ -123,6 +123,16 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         //todo locationの更新は再生時のみする。
     }
 
+    //ユーザーが許可した時
+    override fun onProviderEnabled(provider: String) {
+        locationStart()
+    }
+
+    //拒否した時
+    override fun onProviderDisabled(provider: String) {
+        Toast.makeText(this, "やめちくり～🍣", Toast.LENGTH_SHORT).show()
+    }
+
     // 結果の受け取り
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 1000) {
@@ -131,9 +141,8 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
                 locationStart()
                 return
             } else {
-                // それでも拒否された時の対応←コピペコードに絶対あるコメントアウト
-                val toast = Toast.makeText(this, "え～", Toast.LENGTH_SHORT)
-                toast.show()
+                //それでも拒否された時の対応
+                Toast.makeText(this, "え～", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -153,9 +162,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         fragment!!.getNearStation(point.first, point.second, count)
         binding.counterText.text = "$count"
     }
-
-    override fun onProviderEnabled(provider: String) {}
-    override fun onProviderDisabled(provider: String) {}
 
     override fun setText(station: String) {
 

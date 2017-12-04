@@ -61,18 +61,17 @@ class ListActivity : AppCompatActivity() {
 
         val tuneList = mutableListOf<MemoryItem>()
         tuneList.apply { list.forEach { add(MemoryItem(it)) } }
-        //mediaPlayer = MediaPlayer()
 
         val listAdapter = ItemListAdapter(this, tuneList, { tuneName ->
 
             val file = if (tuneName.isBlank()) {
                 NCMBFile("さんぽ.mp3")
             } else {
-                NCMBFile(tuneName.toString() + ".mp3")
+                NCMBFile(tuneName + ".mp3")
             }
             file.fetchInBackground({ bytes: ByteArray?, _: NCMBException? ->
                 if (!mediaPlayer.isPlaying) {
-                    val tempMp3 = File.createTempFile(tuneName.toString() + "hogehogehoge", ".mp3", cacheDir)
+                    val tempMp3 = File.createTempFile(tuneName + "hogehogehoge", ".mp3", cacheDir)
                     tempMp3.deleteOnExit()
                     val fos = FileOutputStream(tempMp3)
                     fos.write(bytes)
