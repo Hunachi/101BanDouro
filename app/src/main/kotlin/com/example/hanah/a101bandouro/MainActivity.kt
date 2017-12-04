@@ -31,11 +31,11 @@ import com.example.hanah.a101bandouro.model.Key
 
 class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback {
     private lateinit var locationManager: LocationManager
-    private var fragment: MainFragment? = null
+    private lateinit var fragment: MainFragment
     private var count = 1
     private var playable = true
     private var musicSize = 4
-    private var point = Pair(35.6783055555, 139.77044166)
+    private var point = Pair(35.6783055555, 139.77044166)//東京の座標
     private var detailList: MutableList<Pair<String, MutableList<String>>>
             = mutableListOf(Pair("", mutableListOf()))//ハッカソンの時間に合わなくて使ってない。
     private lateinit var binding: ActivityMainBinding
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         NCMB.initialize(this, Key.nifty.first, Key.nifty.second)
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        fragment = MainFragment()
+        fragment = MainFragment(this)
 
         //現在地取得permission確認
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             playable = if (playable) {
                 locationStart()
                 binding.start.setImageResource(R.drawable.porse_play)
-                fragment!!.run {
+                fragment.run {
                     stopMusic()
                     getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
                 }
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
                 //stop
                 binding.start.setImageResource(R.drawable.start_play)
                 locationManager.removeUpdates(this)
-                fragment!!.stopMusic()
+                fragment.stopMusic()
                 true
             }
         }
@@ -98,9 +98,9 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             musicSize + 1 -> 1
             else -> count
         }
-        binding.counterText.text = if (count > 4) count.toString() else "N"
+        binding.counterText.text = if (count < 4) count.toString() else "N"
         if (!playable) {
-            fragment!!.run {
+            fragment.run {
                 stopMusic()
                 getNearStation(point.first, point.second, count)
             }
@@ -118,8 +118,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
             return
         }
-        Log.d("location", "changeした！")
-        //locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
         //todo locationの更新は再生時のみする。
     }
 
@@ -133,7 +132,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
         Toast.makeText(this, "やめちくり～🍣", Toast.LENGTH_SHORT).show()
     }
 
-    // 結果の受け取り
+    // Permissionの結果の受け取り
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == 1000) {
             // 使用が許可された
@@ -157,24 +156,20 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     }
 
     override fun onLocationChanged(location: Location) {
-        point = Pair(location.latitude, location.altitude)
+        Log.d("location", "changeした！")
+        point = Pair(location.longitude, location.latitude)
         count = 1
-        fragment!!.getNearStation(point.first, point.second, count)
         binding.counterText.text = "$count"
+        fragment.getNearStation(pointY = point.first, pointX = point.second, tasteful = 1)
     }
 
-    override fun setText(station: String) {
-
-        if (count != 4) {
-            binding.stationName.text = station + " 付近"
-        } else {
-            binding.stationName.text = ""
-        }
-        if (station == "八王子") binding.detailText.text = when (count) {
+    override fun setText(station: String, musicTitle: String) {
+        binding.stationName.text = station + " 付近"
+        /*if (station == "八王子") binding.detailText.text = when (count) {
             1 -> "「うまるちゃん」\n作品の舞台が八王子メイン"
             2 -> "「SPARK」\n歌手のメンバーのうちの半分が\n八王子出身"
             3 -> "「異邦人」\n歌手が八王子出身。\n八王子の近くで作成"
             else -> "「さんぽ」\n楽しく歩きましょう"
-        }
+        }*/
     }
 }

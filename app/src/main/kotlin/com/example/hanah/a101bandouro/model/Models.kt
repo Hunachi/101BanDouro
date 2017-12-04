@@ -34,8 +34,8 @@ data class GeoPoint(
 data class Station(
         val code: Long,
         val Name: String,
-        val Yomi: String,
-        val Type: String
+        val Yomi: String/*,
+        val Type: List<String> = listOf()*/
 )
 
 data class MemoryItem(
