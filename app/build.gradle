@@ -47,6 +47,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile files('libs/NCMB.jar')
     kapt 'com.android.databinding:compiler:3.0.1'
+    annotationProcessor 'com.github.gfx.android.orma:orma-processor:4.2.5'
+    compile 'com.github.gfx.android.orma:orma:4.2.5'
 }
 
 repositories {

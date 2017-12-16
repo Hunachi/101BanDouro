@@ -43,15 +43,25 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun setTunesList() {
-        DatabaseModel(this).readCursor()
+        /*DatabaseModel(this).readCursor()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    setListAdapter(it)
+                .subscribe({ cursor ->
+                    val list = mutableListOf<String>()
+                    try {
+                        cursor.moveToFirst()
+                        if (cursor.count > 0) (1..cursor.count).forEach {
+                            list.add(cursor.getString(it))
+                        }
+                        Log.d("list size", list.size.toString())
+                    } finally {
+                        cursor?.close()
+                        setListAdapter(list)
+                    }
                 }, {
                     it.printStackTrace()
                     Toast.makeText(this, "曲の情報がありません", Toast.LENGTH_SHORT).show()
-                })
+                })*/
     }
 
     private fun setListAdapter(list: MutableList<String>) {
@@ -89,5 +99,4 @@ class ListActivity : AppCompatActivity() {
         binding.list.layoutManager = LinearLayoutManager(binding.list.context)
         listAdapter.notifyItemMoved(0, list.size)
     }
-
 }
