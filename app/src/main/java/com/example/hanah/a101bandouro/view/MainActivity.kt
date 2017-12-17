@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro
+package com.example.hanah.a101bandouro.view
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -14,11 +14,11 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 
 import com.nifty.cloud.mb.core.NCMB
 import android.databinding.DataBindingUtil
+import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.dao.Tunes
 import com.example.hanah.a101bandouro.dao.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
@@ -84,7 +84,6 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             }
         }
     }
-
 
 
     private fun checkPermission() {

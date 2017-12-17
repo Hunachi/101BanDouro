@@ -1,12 +1,9 @@
-package com.example.hanah.a101bandouro
+package com.example.hanah.a101bandouro.view
 
 import android.annotation.SuppressLint
-import android.media.AudioTrack
 import android.media.MediaPlayer
-import android.os.Bundle
 import android.util.Log
 import com.example.hanah.a101bandouro.client.ServerClient
-import com.nifty.cloud.mb.core.FetchFileCallback
 import com.nifty.cloud.mb.core.NCMBException
 import com.nifty.cloud.mb.core.NCMBFile
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,12 +13,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import android.content.Context
 import android.widget.Toast
-import com.example.hanah.a101bandouro.dao.OrmaDatabase
 import com.example.hanah.a101bandouro.dao.TunesModule
-import com.github.gfx.android.orma.OrmaDatabaseBuilderBase
-import dagger.Provides
 import io.reactivex.Single
-import javax.inject.Singleton
 
 
 @SuppressLint("ValidFragment")

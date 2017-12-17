@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.hanah.a101bandouro.viewModel.MainViewModel" />
+    </data>
+
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/back"
-        tools:context="com.example.hanah.a101bandouro.MainActivity">
+        tools:context="com.example.hanah.a101bandouro.view.MainActivity">
 
         <TextView
             android:id="@+id/station_name3"
@@ -37,6 +44,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:text="@{viewModel.detailText}"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -72,6 +80,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="32dp"
             android:background="@color/colorAccent"
+            android:onClick="@{viewModel.onClickTasteUpButton}"
             android:text="上げる"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +98,7 @@
             android:layout_marginBottom="68dp"
             android:layout_marginTop="8dp"
             android:background="@color/colorAccent"
+            android:onClick="@{viewModel.onClickTasteDownButton}"
             android:text="下げる"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +115,7 @@
             android:layout_height="50dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:text="2"
+            android:text="@{viewModel.counterText}"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="30sp"
@@ -125,6 +135,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:background="#00000000"
+            android:onClick="@{viewModel.onClickMoveToMemoryListButton}"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -140,6 +151,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:text="@{viewModel.stationName}"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/imageView"
@@ -156,6 +168,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:onClick="@{viewModel.onClickMusicStartButton}"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
