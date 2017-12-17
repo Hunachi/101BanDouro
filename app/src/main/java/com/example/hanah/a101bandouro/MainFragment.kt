@@ -17,6 +17,7 @@ import java.io.FileOutputStream
 import android.content.Context
 import android.widget.Toast
 import com.example.hanah.a101bandouro.dao.OrmaDatabase
+import com.example.hanah.a101bandouro.dao.TunesModule
 import com.github.gfx.android.orma.OrmaDatabaseBuilderBase
 import dagger.Provides
 import io.reactivex.Single
@@ -27,38 +28,36 @@ import javax.inject.Singleton
 /**
  * Created by hanah on 2017/11/11.
  */
-class MainFragment(val context: Context){
+class MainFragment(val context: Context) {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = ""
-    /*private var contexts: Context? = null*/
 
     interface Callback {
         fun setText(station: String, tuneTitle: String)
     }
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
-        //i/*f (context == null) return*/
-        Log.d(pointX.toString(), pointY.toString() + "ああーーーーーーーーーーーーー！！")
         var newStation: String
         val client = ServerClient(com.example.hanah.a101bandouro.model.Key.eki)
         client
-                .findStation(pointX, pointY)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    newStation = it.ResultSet.Point.Station.Name
-                    (context as MainActivity).setText(newStation, "$newStation + $tasteful")
-                    Log.d("近くの駅", newStation + tasteful.toString())
-                    if (station != newStation) {
-                        station = newStation
-                        playStationMusic(station = newStation, tasteful = tasteful)
-                        /*DatabaseModel(context).onTunesInsert(station)*//*.onDataSearch(station)*/
-                    }
-                }, {
-                    it.printStackTrace()
-                    Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
-                })
+            .findStation(pointX, pointY)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                newStation = it.ResultSet.Point.Station.Name
+                (context as MainActivity).setText(newStation, "$newStation + $tasteful")
+                Log.d("近くの駅", newStation + tasteful.toString())
+                if (station != newStation) {
+                    station = newStation
+                    playStationMusic(station = newStation, tasteful = tasteful)
+                    //titleをdbに保存
+                    TunesModule(context, context).searchThenInsert(newStation)
+                }
+            }, {
+                it.printStackTrace()
+                Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
+            })
     }
 
     private fun playStationMusic(station: String, tasteful: Int) {
@@ -68,7 +67,7 @@ class MainFragment(val context: Context){
             NCMBFile(station + tasteful.toString() + ".mp3")
         }
         file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
-            if(bytes == null){
+            if (bytes == null) {
                 (context as MainActivity).setText("さんぽ", "さんぽ")
                 Log.d("error", ncmbException.toString())
                 playStationMusic("", 0)
@@ -83,30 +82,30 @@ class MainFragment(val context: Context){
             mediaPlayer.reset()
             Single.fromCallable {
                 mediaPlayer.setDataSource(
-                        FileInputStream(tempMp3).fd
+                    FileInputStream(tempMp3).fd
                 )
                 mediaPlayer.isLooping = true
                 mediaPlayer.prepare()
             }.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        mediaPlayer.start()
-                    }, {
-                        it.printStackTrace()
-                        Toast.makeText(context, "曲の再生に失敗\n + $ncmbException", Toast.LENGTH_SHORT).show()
-                    })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mediaPlayer.start()
+                }, {
+                    it.printStackTrace()
+                    Toast.makeText(context, "曲の再生に失敗\n + $ncmbException", Toast.LENGTH_SHORT).show()
+                })
         })
     }
 
-    fun stopMusic() {
-       /* if (context == null) return*/
+    fun stopMusic() =
         if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            mediaPlayer.reset()
-        }
-    }
+            mediaPlayer.run {
+                pause()
+                reset()
+            }
+        }else Unit
 
     fun changeTasteful(tasteful: Int) {
-
+        playStationMusic(station, tasteful)
     }
 }

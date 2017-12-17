@@ -9,54 +9,47 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.location.LocationProvider
 import android.support.v4.app.ActivityCompat
-import android.widget.TextView
 import android.content.Intent
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import android.Manifest
 import android.content.Context
-import android.media.MediaPlayer
 
 import com.nifty.cloud.mb.core.NCMB
-import android.view.View
-import android.widget.Button
-import android.annotation.SuppressLint
 import android.databinding.DataBindingUtil
-import android.graphics.Color
-import android.widget.ImageButton
+import com.example.hanah.a101bandouro.dao.Tunes
+import com.example.hanah.a101bandouro.dao.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
 import com.example.hanah.a101bandouro.model.Key
 
-class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback {
+class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback, TunesModule.Callback {
+
     private lateinit var locationManager: LocationManager
     private lateinit var fragment: MainFragment
     private var count = 1
     private var playable = true
-    private var musicSize = 4
-    private var point = Pair(35.6783055555, 139.77044166)//東京の座標
-    private var detailList: MutableList<Pair<String, MutableList<String>>>
-            = mutableListOf(Pair("", mutableListOf()))//ハッカソンの時間に合わなくて使ってない。
+    private var tastesCount = 3
+    private var point = Pair(0.0, 0.0)
     private lateinit var binding: ActivityMainBinding
+    private val requestCodeLocation = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        //ニフクラ ファイルストレージ first setting
+        //ニフクラ ファイルストレージ first initialize
         NCMB.initialize(this, Key.nifty.first, Key.nifty.second)
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         fragment = MainFragment(this)
 
-        //現在地取得permission確認
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-        }
+        checkPermission()
 
         //再生ボタン
         binding.start.setOnClickListener {
             playable = if (playable) {
+                //music start
                 locationStart()
                 binding.start.setImageResource(R.drawable.porse_play)
                 fragment.run {
@@ -65,7 +58,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
                 }
                 false
             } else {
-                //stop
+                //music stop
                 binding.start.setImageResource(R.drawable.start_play)
                 locationManager.removeUpdates(this)
                 fragment.stopMusic()
@@ -79,30 +72,31 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             startActivity(intent)
         }
 
-        //渋さを変える
         binding.apply {
             downButton.setOnClickListener {
-                onCount(false)
+                count.plusCount
+                if (!playable) playMusic()
             }
             upButton.setOnClickListener {
-                onCount(true)
+                count.minusCount
+                if (!playable) playMusic()
             }
         }
     }
 
-    private fun onCount(up: Boolean) {
-        if (up) count++ else count--
-        count = when (count) {
-            0 -> musicSize
-            musicSize + 1 -> 1
-            else -> count
+
+
+    private fun checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestCodeLocation)
         }
-        binding.counterText.text = if (count < 4) count.toString() else "N"
-        if (!playable) {
-            fragment.run {
-                stopMusic()
-                getNearStation(point.first, point.second, count)
-            }
+    }
+
+    //渋さの変更
+    private fun playMusic() {
+        fragment.run {
+            stopMusic()
+            changeTasteful(count)
         }
     }
 
@@ -118,57 +112,76 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
             return
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 80f, this)
-        //todo locationの更新は再生時のみする。
     }
 
-    //ユーザーが許可した時
+    //Locationをユーザーが許可
     override fun onProviderEnabled(provider: String) {
         locationStart()
     }
 
-    //拒否した時
+    //Locationをユーザーが拒否
     override fun onProviderDisabled(provider: String) {
-        Toast.makeText(this, "やめちくり～🍣", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "許可がないとアプリを利用できません", Toast.LENGTH_SHORT).show()
+        //もう一度聞く
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestCodeLocation)
     }
 
-    // Permissionの結果の受け取り
+    /*// Permissionの結果の受け取り
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == 1000) {
+        if (requestCode == requestCodeLocation) {
             // 使用が許可された
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 locationStart()
                 return
             } else {
-                //それでも拒否された時の対応
-                Toast.makeText(this, "え～", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "許可がないとアプリを利用できません", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
+*/
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-        when (status) {
-            LocationProvider.AVAILABLE -> Log.d("debug", "LocationProvider.AVAILABLE")
-            LocationProvider.OUT_OF_SERVICE -> Log.d("debug", "LocationProvider.OUT_OF_SERVICE")
-            LocationProvider.TEMPORARILY_UNAVAILABLE -> Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE")
+        val statusText = when (status) {
+            LocationProvider.AVAILABLE -> "位置情報の取得に成功しました"
+            LocationProvider.OUT_OF_SERVICE -> "位置情報が取得できなくなりました。アプリを立ち上げなおしてください。"
+            LocationProvider.TEMPORARILY_UNAVAILABLE -> "位置情報が一時的に取得できていません"
+            else -> "おしゅし"
         }
+        Toast.makeText(this, statusText, Toast.LENGTH_SHORT).show()
     }
 
     override fun onLocationChanged(location: Location) {
-        Log.d("location", "changeした！")
+        Log.d("location", "最寄り駅が変更された")
         point = Pair(location.longitude, location.latitude)
         count = 1
         binding.counterText.text = "$count"
-        fragment.getNearStation(pointY = point.first, pointX = point.second, tasteful = 1)
+        fragment.getNearStation(pointY = point.first, pointX = point.second, tasteful = count)
     }
 
-    override fun setText(station: String, musicTitle: String) {
+    override fun setText(station: String, tuneTitle: String) {
         binding.stationName.text = station + " 付近"
-        /*if (station == "八王子") binding.detailText.text = when (count) {
-            1 -> "「うまるちゃん」\n作品の舞台が八王子メイン"
-            2 -> "「SPARK」\n歌手のメンバーのうちの半分が\n八王子出身"
-            3 -> "「異邦人」\n歌手が八王子出身。\n八王子の近くで作成"
-            else -> "「さんぽ」\n楽しく歩きましょう"
+        /*
+        音楽データと同様,外部dbに情報を取ってくる（情報がないため未実装）
+        binding.detailText.text = ""
         }*/
     }
+
+    override fun error() {}
+
+    override fun tunesList(tunesList: MutableList<Tunes>) {}
+
+    /*拡張関数*/
+    private var Int.plusCount: Int
+        get() =
+            if (this < tastesCount) this + 1 else 1
+        set(value) {
+            binding.counterText.text = value.toString()
+        }
+
+    private var Int.minusCount: Int
+        get() = if (this > 0) this - 1 else tastesCount
+        set(value) {
+            binding.counterText.text = value.toString()
+        }
+
 }
