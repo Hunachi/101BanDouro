@@ -1,7 +1,5 @@
-package com.example.hanah.dao
+package com.example.hanah.a101bandouro.dao
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.github.gfx.android.orma.annotation.Column
 import com.github.gfx.android.orma.annotation.PrimaryKey
 import com.github.gfx.android.orma.annotation.Table
@@ -16,6 +14,6 @@ class Tunes{
     var tunes = ""
 
     @Column(indexed = true)
-    var explanation = ""
+    var explanation = "説明文なし"
 
 }

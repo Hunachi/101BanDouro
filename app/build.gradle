@@ -31,24 +31,39 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // dagger
+    implementation 'com.google.dagger:dagger:2.9'
+
+    //rx
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.2'
     compile 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+
+    //retrofit2
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    //okhttp3
     compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+
+    //gson
     compile 'com.google.code.gson:gson:2.8.0'
+
+    //二フクラ
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile files('libs/NCMB.jar')
+
+    //databinding
     kapt 'com.android.databinding:compiler:3.0.1'
-    annotationProcessor 'com.github.gfx.android.orma:orma-processor:4.2.5'
+
+    //orma
+    kapt 'com.google.dagger:dagger-compiler:2.9'
+    kapt 'com.github.gfx.android.orma:orma-processor:4.2.5'
     compile 'com.github.gfx.android.orma:orma:4.2.5'
 }
 

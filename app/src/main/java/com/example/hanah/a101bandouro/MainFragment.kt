@@ -16,7 +16,11 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import android.content.Context
 import android.widget.Toast
+import com.example.hanah.a101bandouro.dao.OrmaDatabase
+import com.github.gfx.android.orma.OrmaDatabaseBuilderBase
+import dagger.Provides
 import io.reactivex.Single
+import javax.inject.Singleton
 
 
 @SuppressLint("ValidFragment")
@@ -32,7 +36,6 @@ class MainFragment(val context: Context){
     interface Callback {
         fun setText(station: String, tuneTitle: String)
     }
-
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         //i/*f (context == null) return*/
