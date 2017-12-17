@@ -14,7 +14,6 @@ import android.widget.Toast
 import com.example.hanah.a101bandouro.Adapter.ItemListAdapter
 import com.example.hanah.a101bandouro.databinding.ActivityListBinding
 import com.example.hanah.a101bandouro.model.MemoryItem
-import com.example.hanah.a101bandouro.tool.DatabaseModel
 import com.nifty.cloud.mb.core.NCMBException
 import com.nifty.cloud.mb.core.NCMBFile
 import io.reactivex.Scheduler
@@ -43,25 +42,7 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun setTunesList() {
-        /*DatabaseModel(this).readCursor()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ cursor ->
-                    val list = mutableListOf<String>()
-                    try {
-                        cursor.moveToFirst()
-                        if (cursor.count > 0) (1..cursor.count).forEach {
-                            list.add(cursor.getString(it))
-                        }
-                        Log.d("list size", list.size.toString())
-                    } finally {
-                        cursor?.close()
-                        setListAdapter(list)
-                    }
-                }, {
-                    it.printStackTrace()
-                    Toast.makeText(this, "曲の情報がありません", Toast.LENGTH_SHORT).show()
-                })*/
+        //todo setListAdapter(list)
     }
 
     private fun setListAdapter(list: MutableList<String>) {

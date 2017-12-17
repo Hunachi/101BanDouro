@@ -28,7 +28,6 @@ import android.widget.ImageButton
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
 import com.example.hanah.a101bandouro.model.Key
 
-
 class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callback {
     private lateinit var locationManager: LocationManager
     private lateinit var fragment: MainFragment

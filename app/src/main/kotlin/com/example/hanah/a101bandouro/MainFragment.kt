@@ -16,7 +16,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import android.content.Context
 import android.widget.Toast
-import com.example.hanah.a101bandouro.tool.DatabaseModel
 import io.reactivex.Single
 
 
@@ -51,7 +50,7 @@ class MainFragment(val context: Context){
                     if (station != newStation) {
                         station = newStation
                         playStationMusic(station = newStation, tasteful = tasteful)
-                        DatabaseModel(context).onTunesInsert(station)/*.onDataSearch(station)*/
+                        /*DatabaseModel(context).onTunesInsert(station)*//*.onDataSearch(station)*/
                     }
                 }, {
                     it.printStackTrace()
