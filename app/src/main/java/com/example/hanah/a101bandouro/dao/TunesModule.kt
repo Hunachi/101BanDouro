@@ -15,8 +15,7 @@ class TunesModule(context: Context, val callback: Callback) {
     @Singleton
     val orma = OrmaDatabase.builder(context).name("tunes.db").build()
 
-
-    fun insert(tunesName: String) {
+    private fun insert(tunesName: String) {
         val tune = Tunes()
         tune.apply {
             tunes = tunesName
@@ -29,8 +28,24 @@ class TunesModule(context: Context, val callback: Callback) {
         }
     }
 
+    fun searchThenInsert(tunesName: String){
+        orma.selectFromTunes()
+            .tunesEq(tunesName)
+            .executeAsObservable()
+            .toList()
+            .subscribe({
+                //同じものがdbに存在しなかったらinsert
+                if(it.isEmpty()){
+                    insert(tunesName)
+                }
+            },{
+                it.printStackTrace()
+            })
+    }
+
     fun read(){
         orma.selectFromTunes()
+            .orderByTunesDesc()
             .executeAsObservable()
             .toList()
             .subscribe({
