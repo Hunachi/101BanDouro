@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 
 import com.nifty.cloud.mb.core.NCMB
@@ -123,6 +124,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
     override fun onProviderDisabled(provider: String) {
         Toast.makeText(this, "許可がないとアプリを利用できません", Toast.LENGTH_SHORT).show()
         //もう一度聞く
+        locationManager.removeUpdates(this)
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestCodeLocation)
     }
 
@@ -142,9 +144,17 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
         val statusText = when (status) {
-            LocationProvider.AVAILABLE -> "位置情報の取得に成功しました"
-            LocationProvider.OUT_OF_SERVICE -> "位置情報が取得できなくなりました。アプリを立ち上げなおしてください。"
-            LocationProvider.TEMPORARILY_UNAVAILABLE -> "位置情報が一時的に取得できていません"
+            LocationProvider.AVAILABLE -> {
+                "位置情報の取得に成功しました"
+            }
+            LocationProvider.OUT_OF_SERVICE -> {
+                locationManager.removeUpdates(this)
+                "位置情報が取得できなくなりました。アプリを立ち上げなおしてください"
+            }
+            LocationProvider.TEMPORARILY_UNAVAILABLE -> {
+                locationManager.removeUpdates(this)
+                "位置情報が一時的に取得できていません"
+            }
             else -> "おしゅし"
         }
         Toast.makeText(this, statusText, Toast.LENGTH_SHORT).show()
