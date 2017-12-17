@@ -49,10 +49,10 @@ class TunesModule(context: Context, val callback: Callback) {
             .executeAsObservable()
             .toList()
             .subscribe({
-                //callback.tunesList()
+                callback.tunesList(it)
             },{
                 it.printStackTrace()
-                //callback.error()
+                callback.error()
             })
     }
 
@@ -64,6 +64,7 @@ class TunesModule(context: Context, val callback: Callback) {
 
 
     interface Callback {
-
+        fun tunesList(tunesList: MutableList<Tunes>)
+        fun error()
     }
 }

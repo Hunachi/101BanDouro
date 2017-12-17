@@ -1,25 +1,18 @@
 package com.example.hanah.a101bandouro
 
-import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
 import android.databinding.DataBindingUtil
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.widget.Toast
 import com.example.hanah.a101bandouro.Adapter.ItemListAdapter
+import com.example.hanah.a101bandouro.dao.Tunes
+import com.example.hanah.a101bandouro.dao.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityListBinding
 import com.example.hanah.a101bandouro.model.MemoryItem
 import com.nifty.cloud.mb.core.NCMBException
 import com.nifty.cloud.mb.core.NCMBFile
-import io.reactivex.Scheduler
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -27,7 +20,7 @@ import java.io.FileOutputStream
 /**
  * Created by hanah on 2017/11/12.
  */
-class ListActivity : AppCompatActivity() {
+class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     private lateinit var binding: ActivityListBinding
     private val mediaPlayer: MediaPlayer = MediaPlayer()
@@ -42,7 +35,18 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun setTunesList() {
-        //todo setListAdapter(list)
+        TunesModule(this,this)
+            .read()
+        //if this success, next execution is
+    }
+
+    override fun tunesList(tunesList: MutableList<Tunes>) {
+        val list = mutableListOf<String>()
+        tunesList.forEach {
+            list.add(it.tunes)
+        }
+        //todo listの要素自体をstring->tunesにする
+        setListAdapter(list)
     }
 
     private fun setListAdapter(list: MutableList<String>) {
@@ -67,17 +71,25 @@ class ListActivity : AppCompatActivity() {
                     //mediaPlayer = MediaPlayer()
 
                     mediaPlayer.reset()
-                    mediaPlayer.setDataSource(
-                            FileInputStream(tempMp3).fd
-                    )
+                    mediaPlayer.setDataSource(FileInputStream(tempMp3).fd)
                     //mediaPlayer.isLooping = true
                     mediaPlayer.prepare()
                     mediaPlayer.start()
                 }
             })
         })
-        binding.list.adapter = listAdapter
-        binding.list.layoutManager = LinearLayoutManager(binding.list.context)
+
+        binding.list.apply {
+            adapter = listAdapter
+            layoutManager = LinearLayoutManager(binding.list.context)
+        }
+
         listAdapter.notifyItemMoved(0, list.size)
+
+    }
+
+    //errorが起きた際に呼ばれる
+    override fun error() {
+        Toast.makeText(this, "何かしらだめだったぴよ", Toast.LENGTH_SHORT).show()
     }
 }
