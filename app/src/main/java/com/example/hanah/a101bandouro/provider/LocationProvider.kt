@@ -26,7 +26,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
     private val requestCode = 278
 
     @Singleton
-    private fun onCreate() {
+    fun onCreate() {
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         checkPermission()
     }

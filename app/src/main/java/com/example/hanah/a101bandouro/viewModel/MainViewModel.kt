@@ -10,17 +10,18 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.hanah.a101bandouro.R
+import com.example.hanah.a101bandouro.provider.LocationProvider
 import com.example.hanah.a101bandouro.view.ListActivity
 import com.example.hanah.a101bandouro.view.MainFragment
-import javax.security.auth.callback.Callback
 
 /**
  * 🍣 Created by hanah on 2017/12/17.
  */
 class MainViewModel(val context: Context, private val fragment: MainFragment, callback: Callback)
-    : BaseObservable(), MainFragment.Callback {
+    : BaseObservable(), MainFragment.Callback, LocationProvider.Callback {
 
     private val tastesCount = 3 //一つの駅に対する曲の数（今のところ固定）
+    private var point: Pair<Double, Double> = Pair(0.0, 0.0)
 
     @BindingAdapter("changeImage")
     fun changeImage(view: ImageView, playingMusic: Boolean) {
@@ -52,12 +53,11 @@ class MainViewModel(val context: Context, private val fragment: MainFragment, ca
             //todo locationStart()
             fragment.run {
                 stopMusic()
-                //todo getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
+                fragment.getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
             }
             false
         } else {
             //music stop
-            //todo locationManager.removeUpdates(this)
             fragment.stopMusic()
             true
         }
@@ -91,21 +91,26 @@ class MainViewModel(val context: Context, private val fragment: MainFragment, ca
         detailText = tuneTitle
     }
 
+    override fun changeLocation(location: Pair<Double, Double>) {
+        count = 2
+        //todo getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
+    }
+
     /*拡張関数*/
     private var Int.plusCount: Int
         get() =
             if (this < tastesCount) this + 1 else 1
         set(value) {
-            counterText = value.toString()
+            //counterText = value.toString()
         }
 
     private var Int.minusCount: Int
         get() = if (this > 0) this - 1 else tastesCount
         set(value) {
-            counterText = value.toString()
+            //counterText = value.toString()
         }
 
-    interface Callback{
+    interface Callback {
 
     }
 
