@@ -26,16 +26,18 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
     private val requestCode = 278
 
     @Singleton
-    private fun init(context: MainActivity): LocationProvider {
+    private fun onCreate() {
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return LocationProvider(context)
+        checkPermission()
     }
 
-    private fun checkPermission() {
-        val permissionStatement = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-        if (permissionStatement != PackageManager.PERMISSION_GRANTED) {
+    private fun checkPermission(): Boolean {
+        val permissionStatement
+            = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        return if (permissionStatement != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestCode)
-        }
+            false
+        } else true
     }
 
     private fun locationStart() {
@@ -44,58 +46,54 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
             val settingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(context, settingsIntent, null)
         }
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1000)
-            return
-        }
-
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            1000,
-            80f,
-           object : LocationListener{
-               override fun onProviderEnabled(provider: String) {
-                   locationStart()
-               }
-
-               //Locationをユーザーが拒否
-               override fun onProviderDisabled(provider: String) {
-                   Toast.makeText(context, "許可がないとアプリを利用できません", Toast.LENGTH_SHORT).show()
-                   //もう一度聞く
-                   locationManager.removeUpdates(this)
-                   ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestCodeLocation)
-               }
-
-               override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-                   val statusText = when (status) {
-                       android.location.LocationProvider.AVAILABLE -> {
-                           "位置情報の取得に成功しました"
-                       }
-                       android.location.LocationProvider.OUT_OF_SERVICE -> {
-                           locationManager.removeUpdates(this)
-                           "位置情報が取得できなくなりました。アプリを立ち上げなおしてください"
-                       }
-                       android.location.LocationProvider.TEMPORARILY_UNAVAILABLE -> {
-                           locationManager.removeUpdates(this)
-                           "位置情報が一時的に取得できていません"
-                       }
-                       else -> "おしゅし"
-                   }
-                   Toast.makeText(context, statusText, Toast.LENGTH_SHORT).show()
-               }
-
-               override fun onLocationChanged(location: Location) {
-                   Log.d("location", "最寄り駅が変更された")
-                   point = Pair(location.longitude, location.latitude)
-                   count = 1
-                   binding.counterText.text = "$count"
-                   fragment.getNearStation(pointY = point.first, pointX = point.second, tasteful = count)
-               }
-           }
-        )
+        startLocationManager()
     }
 
-    interface Callback{
-        fun changeLocatio(location: Pair<Double, Double>)
+    private fun startLocationManager() {
+        //位置情報の取得が許可されていた場合
+        if (checkPermission())
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                1000,
+                80f,
+                object : LocationListener {
+                    override fun onProviderEnabled(provider: String) {
+                        locationStart()
+                    }
+
+                    //Locationをユーザーが拒否
+                    override fun onProviderDisabled(provider: String) {
+                        Toast.makeText(context, "許可がないとアプリを利用できません　アプリを立ち上げなおしてください", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
+                        val statusText = when (status) {
+                            android.location.LocationProvider.AVAILABLE -> {
+                                "位置情報の取得に成功しました"
+                            }
+                            android.location.LocationProvider.OUT_OF_SERVICE -> {
+                                locationManager.removeUpdates(this)
+                                "位置情報が取得できなくなりました。アプリを立ち上げなおしてください"
+                            }
+                            android.location.LocationProvider.TEMPORARILY_UNAVAILABLE -> {
+                                locationManager.removeUpdates(this)
+                                "位置情報が一時的に取得できていません"
+                            }
+                            else -> "おしゅし"
+                        }
+                        Toast.makeText(context, statusText, Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onLocationChanged(location: Location) {
+                        Log.d("location", "最寄り駅が変更された")
+                        val point = Pair(location.longitude, location.latitude)
+                        callback.changeLocation(point)
+                    }
+                }
+            )
+    }
+
+    interface Callback {
+        fun changeLocation(location: Pair<Double, Double>)
     }
 }
