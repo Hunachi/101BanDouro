@@ -49,22 +49,7 @@ class MainActivity : AppCompatActivity(), LocationListener, MainFragment.Callbac
 
         //再生ボタン
         binding.start.setOnClickListener {
-            playable = if (playable) {
-                //music start
-                locationStart()
-                binding.start.setImageResource(R.drawable.porse_play)
-                fragment.run {
-                    stopMusic()
-                    getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
-                }
-                false
-            } else {
-                //music stop
-                binding.start.setImageResource(R.drawable.start_play)
-                locationManager.removeUpdates(this)
-                fragment.stopMusic()
-                true
-            }
+
         }
 
         //思い出リストへ
