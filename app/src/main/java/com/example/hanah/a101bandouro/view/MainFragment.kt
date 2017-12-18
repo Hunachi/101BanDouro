@@ -16,19 +16,13 @@ import android.widget.Toast
 import com.example.hanah.a101bandouro.dao.TunesModule
 import io.reactivex.Single
 
-
-@SuppressLint("ValidFragment")
 /**
  * Created by hanah on 2017/11/11.
  */
-class MainFragment(val context: Context) {
+class MainFragment(val context: MainActivity , val callback: Callback) {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = ""
-
-    interface Callback {
-        fun setText(station: String, tuneTitle: String)
-    }
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         var newStation: String
@@ -39,7 +33,7 @@ class MainFragment(val context: Context) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 newStation = it.ResultSet.Point.Station.Name
-                (context as MainActivity).setText(newStation, "$newStation + $tasteful")
+                callback.setText(newStation, "$newStation + $tasteful")
                 Log.d("近くの駅", newStation + tasteful.toString())
                 if (station != newStation) {
                     station = newStation
@@ -61,7 +55,7 @@ class MainFragment(val context: Context) {
         }
         file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
             if (bytes == null) {
-                (context as MainActivity).setText("さんぽ", "さんぽ")
+                callback.setText("さんぽ", "さんぽ")
                 Log.d("error", ncmbException.toString())
                 playStationMusic("", 0)
                 return@fetchInBackground
@@ -101,4 +95,9 @@ class MainFragment(val context: Context) {
     fun changeTasteful(tasteful: Int) {
         playStationMusic(station, tasteful)
     }
+
+    interface Callback {
+        fun setText(station: String, tuneTitle: String)
+    }
+
 }

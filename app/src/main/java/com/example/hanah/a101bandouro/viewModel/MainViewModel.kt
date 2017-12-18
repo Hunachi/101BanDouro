@@ -6,22 +6,25 @@ import android.databinding.BaseObservable
 import android.databinding.Bindable
 import android.databinding.BindingAdapter
 import android.support.v4.content.ContextCompat.startActivity
+import android.telecom.Call
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.provider.LocationProvider
 import com.example.hanah.a101bandouro.view.ListActivity
+import com.example.hanah.a101bandouro.view.MainActivity
 import com.example.hanah.a101bandouro.view.MainFragment
 
 /**
  * 🍣 Created by hanah on 2017/12/17.
  */
-class MainViewModel(val context: Context, private val fragment: MainFragment, callback: Callback)
+class MainViewModel(val context: MainActivity,val callback: Callback)
     : BaseObservable(), MainFragment.Callback, LocationProvider.Callback {
 
     private val tastesCount = 3 //一つの駅に対する曲の数（今のところ固定）
     private var point: Pair<Double, Double> = Pair(0.0, 0.0)
+    private lateinit var fragment: MainFragment
 
     @BindingAdapter("changeImage")
     fun changeImage(view: ImageView, playingMusic: Boolean) {
@@ -30,6 +33,13 @@ class MainViewModel(val context: Context, private val fragment: MainFragment, ca
         } else {
             Glide.with(view).load(R.drawable.start_play).into(view)
         }
+    }
+
+    //やばい設計だがこれがnewInstanceの役割
+    fun mainViewModel(): MainViewModel{
+        val mv = MainViewModel(context, callback)
+        fragment = MainFragment(context, mv)
+        return mv
     }
 
     var count = 1

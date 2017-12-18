@@ -1,21 +1,8 @@
 package com.example.hanah.a101bandouro.view
 
-import android.support.v4.content.ContextCompat
+
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.location.LocationProvider
-import android.support.v4.app.ActivityCompat
-import android.content.Intent
-import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
-import android.Manifest
-import android.content.Context
-
 import com.nifty.cloud.mb.core.NCMB
 import android.databinding.DataBindingUtil
 import com.example.hanah.a101bandouro.R
@@ -23,6 +10,7 @@ import com.example.hanah.a101bandouro.dao.Tunes
 import com.example.hanah.a101bandouro.dao.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
 import com.example.hanah.a101bandouro.model.Key
+import com.example.hanah.a101bandouro.provider.LocationProvider
 import com.example.hanah.a101bandouro.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity(), MainViewModel.Callback, TunesModule.Callback {
@@ -33,15 +21,19 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, TunesModule.Ca
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         //ニフクラ ファイルストレージ first initialize
         NCMB.initialize(this, Key.nifty.first, Key.nifty.second)
 
-        fragment = MainFragment(this)
-        binding.viewModel = MainViewModel(this, fragment, this)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        /*todo checkPermission()*/
+        val viewModel = MainViewModel(this, this).mainViewModel()
+        fragment = MainFragment(this, viewModel)
+        binding.viewModel = viewModel
+
+        //start location
+        val locationProvider = LocationProvider(this, viewModel)
+        locationProvider.onCreate()
 
     }
 
