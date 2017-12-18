@@ -1,10 +1,10 @@
 package com.example.hanah.a101bandouro.view
 
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.nifty.cloud.mb.core.NCMB
 import android.databinding.DataBindingUtil
+import android.support.v7.app.AppCompatActivity
 import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.dao.Tunes
 import com.example.hanah.a101bandouro.dao.TunesModule
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, TunesModule.Ca
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val viewModel = MainViewModel(this, this).mainViewModel()
+        val viewModel = MainViewModel(this, this)
         fragment = MainFragment(this, viewModel)
         binding.viewModel = viewModel
 
@@ -54,5 +54,7 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, TunesModule.Ca
     override fun error() {}
 
     override fun tunesList(tunesList: MutableList<Tunes>) {}
+
+    override fun getFragmentInstance(): MainFragment = fragment
 
 }

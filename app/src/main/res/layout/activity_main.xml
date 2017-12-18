@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,13 +10,10 @@
             type="com.example.hanah.a101bandouro.viewModel.MainViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/back"
-        tools:context="com.example.hanah.a101bandouro.view.MainActivity">
+        android:background="@drawable/back">
 
         <TextView
             android:id="@+id/station_name3"
@@ -62,7 +61,6 @@
             android:layout_marginTop="32dp"
             android:background="#00000000"
             android:scaleType="fitXY"
-            android:text="スタート"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +78,6 @@
             android:layout_marginTop="32dp"
             android:background="@color/colorAccent"
             android:onClick="@{viewModel.onClickTasteUpButton}"
-            android:text="上げる"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.96"
@@ -98,7 +95,6 @@
             android:layout_marginTop="8dp"
             android:background="@color/colorAccent"
             android:onClick="@{viewModel.onClickTasteDownButton}"
-            android:text="下げる"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.93"

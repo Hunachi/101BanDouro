@@ -19,27 +19,22 @@ import com.example.hanah.a101bandouro.view.MainFragment
 /**
  * 🍣 Created by hanah on 2017/12/17.
  */
-class MainViewModel(val context: MainActivity,val callback: Callback)
+class MainViewModel(val context: MainActivity, val callback: Callback)
     : BaseObservable(), MainFragment.Callback, LocationProvider.Callback {
 
     private val tastesCount = 3 //一つの駅に対する曲の数（今のところ固定）
     private var point: Pair<Double, Double> = Pair(0.0, 0.0)
-    private lateinit var fragment: MainFragment
 
-    @BindingAdapter("changeImage")
-    fun changeImage(view: ImageView, playingMusic: Boolean) {
-        if (playingMusic) {
-            Glide.with(view).load(R.drawable.porse_play).into(view)
-        } else {
-            Glide.with(view).load(R.drawable.start_play).into(view)
+    companion object {
+        @BindingAdapter("changeImage")
+        @JvmStatic
+        fun changeImage(view: ImageView, playingMusic: Boolean) {
+            if (playingMusic) {
+                Glide.with(view).load(R.drawable.porse_play).into(view)
+            } else {
+                Glide.with(view).load(R.drawable.start_play).into(view)
+            }
         }
-    }
-
-    //やばい設計だがこれがnewInstanceの役割
-    fun mainViewModel(): MainViewModel{
-        val mv = MainViewModel(context, callback)
-        fragment = MainFragment(context, mv)
-        return mv
     }
 
     var count = 1
@@ -61,14 +56,14 @@ class MainViewModel(val context: MainActivity,val callback: Callback)
         playingMusic = if (!playingMusic) {
             //music start
             //todo locationStart()
-            fragment.run {
+            callback.getFragmentInstance().run {
                 stopMusic()
-                fragment.getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
+                getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
             }
             false
         } else {
             //music stop
-            fragment.stopMusic()
+            callback.getFragmentInstance().stopMusic()
             true
         }
     }
@@ -90,7 +85,7 @@ class MainViewModel(val context: MainActivity,val callback: Callback)
 
     //渋さの変更
     private fun playMusic() {
-        fragment.run {
+        callback.getFragmentInstance().run {
             stopMusic()
             changeTasteful(count)
         }
@@ -121,7 +116,7 @@ class MainViewModel(val context: MainActivity,val callback: Callback)
         }
 
     interface Callback {
-
+        fun getFragmentInstance(): MainFragment
     }
 
 }
