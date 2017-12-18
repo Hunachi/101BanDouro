@@ -7,9 +7,11 @@ import android.databinding.Bindable
 import android.databinding.BindingAdapter
 import android.support.v4.content.ContextCompat.startActivity
 import android.telecom.Call
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.example.hanah.a101bandouro.BR
 import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.provider.LocationProvider
 import com.example.hanah.a101bandouro.view.ListActivity
@@ -41,16 +43,35 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
 
     @Bindable
     var playingMusic = false
+        get
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.playingMusic)
+        }
 
     @Bindable
     var stationName = ""
+        get
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.stationName)
+        }
 
     @Bindable
-    var counterText = ""
-        get() = count.toString()
+    var counterText = count.toString()
+    get
+    set(value) {
+        field = value
+        notifyPropertyChanged(BR.counterText)
+    }
 
     @Bindable
     var detailText = ""
+        get
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.detailText)
+        }
 
     fun onClickMusicStartButton(view: View) {
         playingMusic = if (!playingMusic) {
@@ -98,7 +119,9 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
 
     override fun changeLocation(location: Pair<Double, Double>) {
         count = 2
-        //todo getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
+        point = location
+        Log.d("座標", point.toString())
+        callback.getFragmentInstance().getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
     }
 
     /*拡張関数*/
@@ -106,13 +129,13 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
         get() =
             if (this < tastesCount) this + 1 else 1
         set(value) {
-            //counterText = value.toString()
+            counterText = value.toString()
         }
 
     private var Int.minusCount: Int
         get() = if (this > 0) this - 1 else tastesCount
         set(value) {
-            //counterText = value.toString()
+            counterText = value.toString()
         }
 
     interface Callback {
