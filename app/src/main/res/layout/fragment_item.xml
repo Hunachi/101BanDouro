@@ -18,7 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@{viewModel.tuneName}" />
+            android:text="@{viewModel.tuneName}"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
     </LinearLayout>
 </layout>
