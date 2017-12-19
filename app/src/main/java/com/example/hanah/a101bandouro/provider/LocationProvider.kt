@@ -28,7 +28,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
     @Singleton
     fun onCreate() {
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        if(checkPermission()){
+        if (checkPermission()) {
             locationStart()
         }
     }
@@ -62,6 +62,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
                     override fun onProviderEnabled(provider: String) {
                         locationStart()
                     }
+
                     /*Locationをユーザーが拒否*/
                     override fun onProviderDisabled(provider: String) {
                         locationManager.removeUpdates(this)
@@ -81,7 +82,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
                             }
                             else -> "おしゅし"
                         }
-                        Log.d("statement of location",statusText)
+                        Log.d("statement of location", statusText)
                         //Toast.makeText(context, statusText, Toast.LENGTH_SHORT).show()
                     }
 

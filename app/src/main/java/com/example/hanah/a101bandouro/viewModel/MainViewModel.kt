@@ -31,7 +31,7 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
         @BindingAdapter("changeImage")
         @JvmStatic
         fun changeImage(view: ImageView, playingMusic: Boolean) {
-            Log.d("絵","変更")
+            Log.d("絵", "変更")
             if (playingMusic) {
                 Glide.with(view).load(R.drawable.porse_play).into(view)
             } else {
@@ -118,7 +118,7 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
 
     override fun changeLocation(location: Pair<Double, Double>) {
         count.counter(0)
-        if(point == location) return
+        if (point == location) return
         point = location
         Log.d("座標", point.toString())
         /*音楽をUserが効いているときのみStream.*/

@@ -29,12 +29,11 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.d("おれがえきすぱーとや $pointX $pointY",it.toString())
+                Log.d("おれがえきすぱーとや $pointX $pointY", it.toString())
                 newStation = it.ResultSet.Point.Station.Name
                 callback.setText(newStation, "")
 
-                /*駅が変更した時のみ実行*/
-                if (station != newStation) {
+                if (station != newStation || !mediaPlayer.isPlaying) {
                     playStationMusic(station = newStation, tasteful = tasteful)
                     station = newStation
                 }
@@ -66,9 +65,9 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 return@fetchInBackground
             }
             //titleをdbに保存
-            if(station.isNotBlank()){
+            if (station.isNotBlank()) {
                 callback.setText("$station 付近", "$station の $tasteful　曲目")
-                TunesModule(context, context).searchThenInsert("$station $tasteful")
+                TunesModule(context, context).searchThenInsert("$station$tasteful")
             }
             val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
             tempMp3.deleteOnExit()

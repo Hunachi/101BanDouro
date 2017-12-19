@@ -34,7 +34,7 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     /*if this success, next execution is tunesList*/
     private fun setTunesList() {
-        TunesModule(this,this).read()
+        TunesModule(this, this).read()
     }
 
     override fun tunesList(tunesList: MutableList<Tunes>) {
@@ -52,29 +52,25 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
         val listAdapter = ItemListAdapter(this, tuneList, { tuneName ->
 
-            val file = if (tuneName.isBlank()) {
-                NCMBFile("さんぽ.mp3")
-            } else {
-                NCMBFile(tuneName + ".mp3")
-            }
-            file.fetchInBackground({ bytes: ByteArray?, _: NCMBException? ->
-                if (!mediaPlayer.isPlaying) {
-                    val tempMp3 = File.createTempFile(tuneName + "hogehogehoge", ".mp3", cacheDir)
-                    tempMp3.deleteOnExit()
+            NCMBFile(tuneName + ".mp3")
+                .fetchInBackground({ bytes: ByteArray?, _: NCMBException? ->
+                    if (!mediaPlayer.isPlaying) {
+                        val tempMp3 = File.createTempFile(tuneName + "hogehogehoge", ".mp3", cacheDir)
+                        tempMp3.deleteOnExit()
 
-                    FileOutputStream(tempMp3).apply {
-                        write(bytes)
-                        close()
+                        FileOutputStream(tempMp3).apply {
+                            write(bytes)
+                            close()
+                        }
+                        mediaPlayer.apply {
+                            pause()
+                            reset()
+                            setDataSource(FileInputStream(tempMp3).fd)
+                            prepare()
+                            start()
+                        }
                     }
-                    mediaPlayer.apply {
-                        pause()
-                        reset()
-                        setDataSource(FileInputStream(tempMp3).fd)
-                        prepare()
-                        start()
-                    }
-                }
-            })
+                })
         })
         binding.list.apply {
             adapter = listAdapter
