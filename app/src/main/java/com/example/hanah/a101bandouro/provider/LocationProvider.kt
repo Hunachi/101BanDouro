@@ -81,7 +81,8 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
                             }
                             else -> "おしゅし"
                         }
-                        Toast.makeText(context, statusText, Toast.LENGTH_SHORT).show()
+                        Log.d("statement of location",statusText)
+                        //Toast.makeText(context, statusText, Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onLocationChanged(location: Location) {
