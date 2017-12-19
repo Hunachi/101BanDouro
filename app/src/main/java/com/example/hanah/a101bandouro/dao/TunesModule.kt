@@ -13,19 +13,14 @@ import javax.inject.Singleton
 
 class TunesModule(context: Context, val callback: Callback) {
 
-
-    var hasCreated: Boolean = false
-
     @Singleton
     val orma = OrmaDatabase.builder(context).name("tunes.db").build()
 
     private fun insert(tunesName: String) {
-        val tune = Tunes()
-        tune.apply {
-            tunes = tunesName
-        }
 
-        //insert実行
+        val tune = Tunes().apply { tunes = tunesName }
+
+        /*insert実行*/
         Single.fromCallable {
             orma.transactionSync {
                 orma.insertIntoTunes(tune)
@@ -34,11 +29,7 @@ class TunesModule(context: Context, val callback: Callback) {
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("hello","かなしい")
-            }, {
-                it.printStackTrace()
-            })
+            .subscribe()
     }
 
     fun searchThenInsert(tunesName: String) {
