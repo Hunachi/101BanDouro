@@ -31,6 +31,7 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
         @BindingAdapter("changeImage")
         @JvmStatic
         fun changeImage(view: ImageView, playingMusic: Boolean) {
+            Log.d("絵","変更")
             if (playingMusic) {
                 Glide.with(view).load(R.drawable.porse_play).into(view)
             } else {
@@ -75,16 +76,16 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
 
     fun onClickMusicStartButton(view: View) {
         playingMusic = if (!playingMusic) {
-            /*music start*/
+            /*music start(((o(*ﾟ▽ﾟ*)o)))*/
             callback.getFragmentInstance().run {
                 Log.d("座標", point.toString())
                 getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
             }
-            false
-        } else {
-            /*music stop*/
-            callback.getFragmentInstance().stopMusic()
             true
+        } else {
+            /*music stop(੭ु´･ω･`)੭ु⁾⁾*/
+            callback.getFragmentInstance().stopMusic()
+            false
         }
     }
 
@@ -119,7 +120,8 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
         count.counter(0)
         point = location
         Log.d("座標", point.toString())
-        callback.getFragmentInstance().getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
+        /*音楽をUserが効いているときのみStream.*/
+        if (playingMusic) callback.getFragmentInstance().getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
     }
 
     /*拡張関数*/

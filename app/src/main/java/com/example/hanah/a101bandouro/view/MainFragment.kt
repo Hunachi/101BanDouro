@@ -35,7 +35,6 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 Log.d("おれがえきすぱーとや $pointX $pointY",it.toString())
                 newStation = it.ResultSet.Point.Station.Name
                 callback.setText(newStation, "$newStation + $tasteful")
-                Log.d("近くの駅", newStation + tasteful.toString())
 
                 /*駅が変更した時のみ実行*/
                 if (station != newStation) {
@@ -92,8 +91,8 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
 
     fun stopMusic() {
         if (mediaPlayer.isPlaying) {
-            mediaPlayer.apply {
-                prepare()
+            mediaPlayer.run {
+                pause()
                 reset()
             }
             callback.setText("","音楽が停止中")
