@@ -31,7 +31,7 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
             .subscribe({
                 Log.d("おれがえきすぱーとや $pointX $pointY",it.toString())
                 newStation = it.ResultSet.Point.Station.Name
-                callback.setText(newStation, "$newStation + $tasteful")
+                callback.setText(newStation, "")
 
                 /*駅が変更した時のみ実行*/
                 if (station != newStation) {
@@ -43,7 +43,6 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 if (station.isNotBlank()) {
                     station = ""
                     it.printStackTrace()
-                    Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
                     /*さんぽを流す*/
                     playStationMusic("", 0)
                 }
@@ -94,7 +93,6 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 pause()
                 reset()
             }
-            callback.setText("","音楽が停止中")
         }
     }
 

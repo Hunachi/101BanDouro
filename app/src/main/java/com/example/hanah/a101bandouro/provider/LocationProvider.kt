@@ -56,7 +56,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
         if (checkPermission())
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                3,
+                1,
                 80f,
                 object : LocationListener {
                     override fun onProviderEnabled(provider: String) {
