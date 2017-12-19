@@ -70,6 +70,7 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
                         close()
                     }
                     mediaPlayer.apply {
+                        pause()
                         reset()
                         setDataSource(FileInputStream(tempMp3).fd)
                         prepare()
