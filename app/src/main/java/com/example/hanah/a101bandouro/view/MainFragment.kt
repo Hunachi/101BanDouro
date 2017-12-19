@@ -39,8 +39,6 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 /*駅が変更した時のみ実行*/
                 if (station != newStation) {
                     playStationMusic(station = newStation, tasteful = tasteful)
-                    //titleをdbに保存
-                    TunesModule(context, context).searchThenInsert(newStation)
                     station = newStation
                 }
             }, {
@@ -71,7 +69,11 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 playStationMusic("", 0)
                 return@fetchInBackground
             }
-            if(station.isNotBlank())callback.setText("$station 付近", "$station の $tasteful　曲目")
+            //titleをdbに保存
+            if(station.isNotBlank()){
+                callback.setText("$station 付近", "$station の $tasteful　曲目")
+                TunesModule(context, context).searchThenInsert("$station $tasteful")
+            }
             val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
             tempMp3.deleteOnExit()
             FileOutputStream(tempMp3).apply {
