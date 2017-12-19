@@ -111,19 +111,19 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
     }
 
     override fun setText(station: String, tuneTitle: String) {
-        stationName = station.plus("付近")
-        detailText = tuneTitle
+        if (station.isNotBlank()) stationName = station.plus("付近")
+        if (tuneTitle.isNotBlank()) detailText = tuneTitle
     }
 
     override fun changeLocation(location: Pair<Double, Double>) {
-        count = 2
+        count.counter(0)
         point = location
         Log.d("座標", point.toString())
         callback.getFragmentInstance().getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
     }
 
     /*拡張関数*/
-    private fun Int.counter(value: Int): Int{
+    private fun Int.counter(value: Int): Int {
         val count = when (value + this) {
             -1 -> tastesCount
             tastesCount + 1 -> 1

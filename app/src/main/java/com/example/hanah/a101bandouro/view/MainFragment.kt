@@ -46,8 +46,8 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 }
             }, {
                 /*error続きの場合はそのまま.*/
-                if (station != "error") {
-                    station = "error"
+                if (station.isNotBlank()) {
+                    station = ""
                     it.printStackTrace()
                     Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
                     /*さんぽを流す*/
@@ -60,10 +60,9 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
     /*さんぽを流す場合はstationがblank.*/
     private fun playStationMusic(station: String, tasteful: Int) {
         val file = if (station.isBlank()) {
-            callback.setText("さんぽ", "この付近には何もないようですね")
+            callback.setText("", "さんぽ")
             NCMBFile("さんぽ.mp3")
         } else {
-            callback.setText("$station 付近", "$station の $tasteful　曲目")
             NCMBFile(station + tasteful.toString() + ".mp3")
         }
         file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
@@ -73,6 +72,7 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 playStationMusic("", 0)
                 return@fetchInBackground
             }
+            if(station.isNotBlank())callback.setText("$station 付近", "$station の $tasteful　曲目")
             val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
             tempMp3.deleteOnExit()
             FileOutputStream(tempMp3).apply {
@@ -91,11 +91,13 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
     }
 
     fun stopMusic() {
-        if (mediaPlayer.isPlaying)
+        if (mediaPlayer.isPlaying) {
             mediaPlayer.apply {
                 prepare()
                 reset()
             }
+            callback.setText("","音楽が停止中")
+        }
     }
 
     /*渋さのみの変更*/
