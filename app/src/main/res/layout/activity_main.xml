@@ -44,13 +44,13 @@
             android:layout_marginTop="8dp"
             android:text="@{viewModel.detailText}"
             android:textAlignment="center"
-            android:textSize="24sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.512" />
+            app:layout_constraintVertical_bias="0.55" />
 
         <ImageButton
             android:id="@+id/imageView"
@@ -124,16 +124,16 @@
 
         <ImageButton
             android:id="@+id/memory_button_"
-            android:layout_width="95dp"
-            android:layout_height="93dp"
+            android:layout_width="76dp"
+            android:layout_height="73dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="392dp"
+            android:layout_marginTop="16dp"
             android:background="#00000000"
             android:onClick="@{viewModel.onClickMoveToMemoryListButton}"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.062"
+            app:layout_constraintHorizontal_bias="0.027"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/btn_list" />
@@ -151,9 +151,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.231" />
+            app:layout_constraintVertical_bias="0.35000002" />
 
         <ImageButton
             android:id="@+id/start"
@@ -163,6 +164,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
             android:onClick="@{viewModel.onClickMusicStartButton}"
             android:scaleType="fitXY"
             app:changeImage="@{viewModel.playingMusic}"

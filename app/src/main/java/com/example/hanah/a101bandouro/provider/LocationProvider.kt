@@ -56,7 +56,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
         if (checkPermission())
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                1,
+                5,
                 80f,
                 object : LocationListener {
                     override fun onProviderEnabled(provider: String) {
@@ -71,7 +71,7 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
                     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
                         val statusText = when (status) {
                             android.location.LocationProvider.AVAILABLE -> {
-                                "位置情報の取得に成功しました"
+                                ""
                             }
                             android.location.LocationProvider.OUT_OF_SERVICE -> {
                                 "位置情報が取得できなくなりました。アプリを立ち上げなおしてください"

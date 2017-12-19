@@ -40,7 +40,7 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                 }
             }, {
                 /*error続きの場合はそのまま.*/
-                if (station.isNotBlank()) {
+                if (station.isNotBlank() && mediaPlayer.isPlaying) {
                     station = ""
                     it.printStackTrace()
                     /*さんぽを流す*/

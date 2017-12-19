@@ -59,7 +59,7 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
         }
 
     @Bindable
-    var counterText = "0"
+    var counterText = "1"
         get
         set(value) {
             field = value
