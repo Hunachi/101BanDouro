@@ -34,10 +34,10 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     }
 
+    /*if this success, next execution is tunesList*/
     private fun setTunesList() {
         TunesModule(this,this)
             .read()
-        //if this success, next execution is
     }
 
     override fun tunesList(tunesList: MutableList<Tunes>) {
@@ -45,7 +45,6 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
         tunesList.forEach {
             list.add(it.tunes)
         }
-        //todo listの要素自体をstring->tunesにする
         setListAdapter(list)
     }
 
@@ -79,23 +78,24 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
                 }
             })
         })
-
         binding.list.apply {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(binding.list.context)
         }
         listAdapter.notifyItemMoved(0, list.size)
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.pause()
-        mediaPlayer.reset()
+        mediaPlayer.apply {
+            pause()
+            reset()
+        }
     }
 
     //errorが起きた際に呼ばれる
     override fun error() {
         Toast.makeText(this, "何かしらだめだったぴよ", Toast.LENGTH_SHORT).show()
     }
+
 }

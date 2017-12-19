@@ -19,7 +19,7 @@ import io.reactivex.Single
 /**
  * Created by hanah on 2017/11/11.
  */
-class MainFragment(val context: MainActivity, val callback: Callback) {
+class MainFragment(private val context: MainActivity, val callback: Callback) {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = ""
@@ -75,7 +75,6 @@ class MainFragment(val context: MainActivity, val callback: Callback) {
             }
             val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
             tempMp3.deleteOnExit()
-
             FileOutputStream(tempMp3).apply {
                 write(bytes)
                 close()
@@ -99,6 +98,7 @@ class MainFragment(val context: MainActivity, val callback: Callback) {
             }
     }
 
+    /*渋さのみの変更*/
     fun changeTasteful(tasteful: Int) {
         playStationMusic(station, tasteful)
     }
