@@ -28,16 +28,13 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list)
         setTunesList()
-
     }
 
     /*if this success, next execution is tunesList*/
     private fun setTunesList() {
-        TunesModule(this,this)
-            .read()
+        TunesModule(this,this).read()
     }
 
     override fun tunesList(tunesList: MutableList<Tunes>) {
@@ -88,7 +85,7 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.apply {
+        mediaPlayer.run {
             pause()
             reset()
         }

@@ -4,7 +4,9 @@ import android.content.Context
 import android.util.Log
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
+import org.antlr.v4.runtime.atn.SemanticContext
 import javax.inject.Singleton
 
 /**
@@ -12,6 +14,8 @@ import javax.inject.Singleton
  */
 
 class TunesModule(context: Context, val callback: Callback) {
+
+    private var searching = false
 
     @Singleton
     val orma = OrmaDatabase.builder(context).name("tunes.db").build()
@@ -24,46 +28,59 @@ class TunesModule(context: Context, val callback: Callback) {
         Single.fromCallable {
             orma.transactionSync {
                 orma.insertIntoTunes(tune)
-                orma.prepareInsertIntoTunes().execute(tune)
             }
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+            .subscribe(
+                { searching = false },
+                {
+                    it.printStackTrace()
+                    searching = false
+                }
+            )
     }
 
     fun searchThenInsert(tunesName: String) {
+        if (searching) return
+        searching = true
         /*同じものがdbにあるかconfirm*/
-        var flag = false
         orma.selectFromTunes()
             .tunesEq(tunesName)
             .executeAsObservable()
+            .toList()
             .subscribe({
-                flag = true
+                Log.d("はお", it.size.toString())
+                if (it.size == 0) insert(tunesName)
             }, {
+                searching = false
                 it.printStackTrace()
-            }, {
-                if (!flag) insert(tunesName)
             })
     }
 
     fun read() {
+        if (searching) return
+        searching = true
         orma.selectFromTunes()
             .orderByTunesDesc()
             .executeAsObservable()
             .toList()
             .subscribe({
                 callback.tunesList(it)
+                searching = false
             }, {
                 it.printStackTrace()
+                searching = false
                 callback.error()
             })
     }
 
     //この手で全て消し去る(delete all)
     fun delete() {
-        orma.deleteFromTunes()
-            .execute()
+        Single.fromCallable { orma.deleteFromTunes().execute() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
 

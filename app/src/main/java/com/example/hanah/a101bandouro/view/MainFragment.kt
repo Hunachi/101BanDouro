@@ -1,6 +1,5 @@
 package com.example.hanah.a101bandouro.view
 
-import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.util.Log
 import com.example.hanah.a101bandouro.client.ServerClient
@@ -11,10 +10,8 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import android.content.Context
 import android.widget.Toast
 import com.example.hanah.a101bandouro.dao.TunesModule
-import io.reactivex.Single
 
 /**
  * Created by hanah on 2017/11/11.
@@ -49,7 +46,6 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
                     Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
                     /*さんぽを流す*/
                     playStationMusic("", 0)
-                    TunesModule(context, context).searchThenInsert("さんぽ")
                 }
             })
     }
@@ -58,6 +54,7 @@ class MainFragment(private val context: MainActivity, val callback: Callback) {
     private fun playStationMusic(station: String, tasteful: Int) {
         val file = if (station.isBlank()) {
             callback.setText("", "さんぽ")
+            TunesModule(context, context).searchThenInsert("さんぽ")
             NCMBFile("さんぽ.mp3")
         } else {
             NCMBFile(station + tasteful.toString() + ".mp3")
