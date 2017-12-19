@@ -30,7 +30,6 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list)
-
         setTunesList()
 
     }
@@ -66,16 +65,17 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
                 if (!mediaPlayer.isPlaying) {
                     val tempMp3 = File.createTempFile(tuneName + "hogehogehoge", ".mp3", cacheDir)
                     tempMp3.deleteOnExit()
-                    val fos = FileOutputStream(tempMp3)
-                    fos.write(bytes)
-                    fos.close()
-                    //mediaPlayer = MediaPlayer()
 
-                    mediaPlayer.reset()
-                    mediaPlayer.setDataSource(FileInputStream(tempMp3).fd)
-                    //mediaPlayer.isLooping = true
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
+                    FileOutputStream(tempMp3).apply {
+                        write(bytes)
+                        close()
+                    }
+                    mediaPlayer.apply {
+                        reset()
+                        setDataSource(FileInputStream(tempMp3).fd)
+                        prepare()
+                        start()
+                    }
                 }
             })
         })
@@ -84,7 +84,6 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(binding.list.context)
         }
-
         listAdapter.notifyItemMoved(0, list.size)
 
     }

@@ -77,7 +77,6 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
         playingMusic = if (!playingMusic) {
             /*music start*/
             callback.getFragmentInstance().run {
-                stopMusic()
                 Log.d("座標", point.toString())
                 getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
             }
@@ -107,7 +106,6 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
     /*渋さの変更*/
     private fun playMusic() {
         callback.getFragmentInstance().run {
-            stopMusic()
             changeTasteful(count)
         }
     }

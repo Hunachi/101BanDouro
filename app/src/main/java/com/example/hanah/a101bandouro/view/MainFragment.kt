@@ -32,68 +32,72 @@ class MainFragment(val context: MainActivity, val callback: Callback) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
+
                 newStation = it.ResultSet.Point.Station.Name
                 callback.setText(newStation, "$newStation + $tasteful")
                 Log.d("近くの駅", newStation + tasteful.toString())
+
+                /*駅が変更した時のみ実行*/
                 if (station != newStation) {
-                    station = newStation
                     playStationMusic(station = newStation, tasteful = tasteful)
                     //titleをdbに保存
                     TunesModule(context, context).searchThenInsert(newStation)
+                    station = newStation
                 }
             }, {
-                it.printStackTrace()
-                Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
-                /*さんぽを流す*/
-                playStationMusic("", 0)
-                TunesModule(context, context).searchThenInsert("さんぽ")
+                /*error続きの場合はそのまま.*/
+                if (station != "error") {
+                    station = "error"
+                    it.printStackTrace()
+                    Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
+                    /*さんぽを流す*/
+                    playStationMusic("", 0)
+                    TunesModule(context, context).searchThenInsert("さんぽ")
+                }
             })
     }
 
+    /*さんぽを流す場合はstationがblank.*/
     private fun playStationMusic(station: String, tasteful: Int) {
         val file = if (station.isBlank()) {
+            callback.setText("さんぽ", "この付近には何もないようですね")
             NCMBFile("さんぽ.mp3")
         } else {
+            callback.setText("$station 付近", "$station の $tasteful　曲目")
             NCMBFile(station + tasteful.toString() + ".mp3")
         }
         file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
+
+            /*データベースに曲が存在しなかったらさんぽ*/
             if (bytes == null) {
-                callback.setText("さんぽ", "さんぽ")
-                Log.d("error", ncmbException.toString())
                 playStationMusic("", 0)
                 return@fetchInBackground
             }
             val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
             tempMp3.deleteOnExit()
-            val fos = FileOutputStream(tempMp3)
-            fos.write(bytes)
-            fos.close()
-            mediaPlayer.stop()
-            mediaPlayer.reset()
-            Single.fromCallable {
-                mediaPlayer.setDataSource(
-                    FileInputStream(tempMp3).fd
-                )
-                mediaPlayer.isLooping = true
-                mediaPlayer.prepare()
-            }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mediaPlayer.start()
-                }, {
-                    it.printStackTrace()
-                    Toast.makeText(context, "曲の再生に失敗\n + $ncmbException", Toast.LENGTH_SHORT).show()
-                })
+
+            FileOutputStream(tempMp3).apply {
+                write(bytes)
+                close()
+            }
+            mediaPlayer.apply {
+                pause()
+                reset()
+                setDataSource(FileInputStream(tempMp3).fd)
+                isLooping = true
+                prepare()
+                start()
+            }
         })
     }
 
-    fun stopMusic() =
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.run {
-                pause()
+    fun stopMusic() {
+        if (mediaPlayer.isPlaying)
+            mediaPlayer.apply {
+                prepare()
                 reset()
             }
-        } else Unit
+    }
 
     fun changeTasteful(tasteful: Int) {
         playStationMusic(station, tasteful)
