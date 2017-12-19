@@ -28,7 +28,9 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
     @Singleton
     fun onCreate() {
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        checkPermission()
+        if(checkPermission()){
+            locationStart()
+        }
     }
 
     private fun checkPermission(): Boolean {
@@ -54,13 +56,12 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
         if (checkPermission())
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                1000,
+                1,
                 80f,
                 object : LocationListener {
                     override fun onProviderEnabled(provider: String) {
                         locationStart()
                     }
-
                     //Locationをユーザーが拒否
                     override fun onProviderDisabled(provider: String) {
                         Toast.makeText(context, "許可がないとアプリを利用できません　アプリを立ち上げなおしてください", Toast.LENGTH_SHORT).show()
