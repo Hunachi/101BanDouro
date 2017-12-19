@@ -21,7 +21,7 @@ import com.example.hanah.a101bandouro.view.MainFragment
 /**
  * 🍣 Created by hanah on 2017/12/17.
  */
-class MainViewModel(val context: MainActivity, val callback: Callback)
+class MainViewModel(private val context: MainActivity, val callback: Callback)
     : BaseObservable(), MainFragment.Callback, LocationProvider.Callback {
 
     private val tastesCount = 3 //一つの駅に対する曲の数（今のところ固定）
@@ -58,12 +58,12 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
         }
 
     @Bindable
-    var counterText = count.toString()
-    get
-    set(value) {
-        field = value
-        notifyPropertyChanged(BR.counterText)
-    }
+    var counterText = "0"
+        get
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.counterText)
+        }
 
     @Bindable
     var detailText = ""
@@ -75,27 +75,27 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
 
     fun onClickMusicStartButton(view: View) {
         playingMusic = if (!playingMusic) {
-            //music start
-            //todo locationStart()
+            /*music start*/
             callback.getFragmentInstance().run {
                 stopMusic()
+                Log.d("座標", point.toString())
                 getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
             }
             false
         } else {
-            //music stop
+            /*music stop*/
             callback.getFragmentInstance().stopMusic()
             true
         }
     }
 
     fun onClickTasteUpButton(view: View) {
-        count.plusCount
+        count = count.counter(1)
         if (playingMusic) playMusic()
     }
 
     fun onClickTasteDownButton(view: View) {
-        count.minusCount
+        count = count.counter(-1)
         if (playingMusic) playMusic()
     }
 
@@ -104,7 +104,7 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
         startActivity(context, intent, null)
     }
 
-    //渋さの変更
+    /*渋さの変更*/
     private fun playMusic() {
         callback.getFragmentInstance().run {
             stopMusic()
@@ -125,20 +125,18 @@ class MainViewModel(val context: MainActivity, val callback: Callback)
     }
 
     /*拡張関数*/
-    private var Int.plusCount: Int
-        get() =
-            if (this < tastesCount) this + 1 else 1
-        set(value) {
-            counterText = value.toString()
+    private fun Int.counter(value: Int): Int{
+        val count = when (value + this) {
+            -1 -> tastesCount
+            tastesCount + 1 -> 1
+            else -> value + this
         }
-
-    private var Int.minusCount: Int
-        get() = if (this > 0) this - 1 else tastesCount
-        set(value) {
-            counterText = value.toString()
-        }
+        counterText = count.toString()
+        return count
+    }
 
     interface Callback {
+        /*fragmentがuninitializedになるのを防ぎたい,*/
         fun getFragmentInstance(): MainFragment
     }
 

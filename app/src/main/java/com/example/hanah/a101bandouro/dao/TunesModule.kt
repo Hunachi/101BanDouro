@@ -1,6 +1,10 @@
 package com.example.hanah.a101bandouro.dao
 
 import android.content.Context
+import android.util.Log
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Singleton
 
 /**
@@ -20,44 +24,53 @@ class TunesModule(context: Context, val callback: Callback) {
         tune.apply {
             tunes = tunesName
         }
-        orma.insertIntoTunes(tune)
 
         //insert実行
-        orma.transactionSync {
-            orma.prepareInsertIntoTunes().execute(tune)
+        Single.fromCallable {
+            orma.transactionSync {
+                orma.insertIntoTunes(tune)
+                orma.prepareInsertIntoTunes().execute(tune)
+            }
         }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                Log.d("hello","かなしい")
+            }, {
+                it.printStackTrace()
+            })
     }
 
-    fun searchThenInsert(tunesName: String){
+    fun searchThenInsert(tunesName: String) {
         orma.selectFromTunes()
             .tunesEq(tunesName)
             .executeAsObservable()
             .toList()
             .subscribe({
                 //同じものがdbに存在しなかったらinsert
-                if(it.isEmpty()){
+                if (it.isEmpty()) {
                     insert(tunesName)
                 }
-            },{
+            }, {
                 it.printStackTrace()
             })
     }
 
-    fun read(){
+    fun read() {
         orma.selectFromTunes()
             .orderByTunesDesc()
             .executeAsObservable()
             .toList()
             .subscribe({
                 callback.tunesList(it)
-            },{
+            }, {
                 it.printStackTrace()
                 callback.error()
             })
     }
 
     //この手で全て消し去る(delete all)
-    fun delete(){
+    fun delete() {
         orma.deleteFromTunes()
             .execute()
     }

@@ -89,6 +89,12 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.pause()
+        mediaPlayer.reset()
+    }
+
     //errorが起きた際に呼ばれる
     override fun error() {
         Toast.makeText(this, "何かしらだめだったぴよ", Toast.LENGTH_SHORT).show()

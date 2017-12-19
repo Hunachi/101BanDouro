@@ -19,7 +19,7 @@ import io.reactivex.Single
 /**
  * Created by hanah on 2017/11/11.
  */
-class MainFragment(val context: MainActivity , val callback: Callback) {
+class MainFragment(val context: MainActivity, val callback: Callback) {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = ""
@@ -44,6 +44,9 @@ class MainFragment(val context: MainActivity , val callback: Callback) {
             }, {
                 it.printStackTrace()
                 Toast.makeText(context, "駅の取得に失敗", Toast.LENGTH_SHORT).show()
+                /*さんぽを流す*/
+                playStationMusic("", 0)
+                TunesModule(context, context).searchThenInsert("さんぽ")
             })
     }
 
@@ -60,7 +63,7 @@ class MainFragment(val context: MainActivity , val callback: Callback) {
                 playStationMusic("", 0)
                 return@fetchInBackground
             }
-            val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context?.cacheDir)
+            val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
             tempMp3.deleteOnExit()
             val fos = FileOutputStream(tempMp3)
             fos.write(bytes)
@@ -90,7 +93,7 @@ class MainFragment(val context: MainActivity , val callback: Callback) {
                 pause()
                 reset()
             }
-        }else Unit
+        } else Unit
 
     fun changeTasteful(tasteful: Int) {
         playStationMusic(station, tasteful)
