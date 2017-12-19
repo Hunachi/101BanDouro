@@ -22,17 +22,17 @@ import io.reactivex.Single
 class MainFragment(private val context: MainActivity, val callback: Callback) {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
-    private var station = ""
+    private var station = "hoge"
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         var newStation: String
         val client = ServerClient(com.example.hanah.a101bandouro.model.Key.eki)
         client
-            .findStation(pointX, pointY)
+            .findStation(pointY, pointX)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-
+                Log.d("おれがえきすぱーとや $pointX $pointY",it.toString())
                 newStation = it.ResultSet.Point.Station.Name
                 callback.setText(newStation, "$newStation + $tasteful")
                 Log.d("近くの駅", newStation + tasteful.toString())
