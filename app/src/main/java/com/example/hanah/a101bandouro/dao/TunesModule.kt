@@ -33,17 +33,17 @@ class TunesModule(context: Context, val callback: Callback) {
     }
 
     fun searchThenInsert(tunesName: String) {
+        /*同じものがdbにあるかconfirm*/
+        var flag = false
         orma.selectFromTunes()
             .tunesEq(tunesName)
             .executeAsObservable()
-            .toList()
             .subscribe({
-                //同じものがdbに存在しなかったらinsert
-                if (it.isEmpty()) {
-                    insert(tunesName)
-                }
+                flag = true
             }, {
                 it.printStackTrace()
+            }, {
+                if (!flag) insert(tunesName)
             })
     }
 
