@@ -118,6 +118,7 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
 
     override fun changeLocation(location: Pair<Double, Double>) {
         count.counter(0)
+        if(point == location) return
         point = location
         Log.d("座標", point.toString())
         /*音楽をUserが効いているときのみStream.*/
