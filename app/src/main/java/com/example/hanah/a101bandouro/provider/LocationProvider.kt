@@ -56,14 +56,15 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
         if (checkPermission())
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                1,
+                3,
                 80f,
                 object : LocationListener {
                     override fun onProviderEnabled(provider: String) {
                         locationStart()
                     }
-                    //Locationをユーザーが拒否
+                    /*Locationをユーザーが拒否*/
                     override fun onProviderDisabled(provider: String) {
+                        locationManager.removeUpdates(this)
                         Toast.makeText(context, "許可がないとアプリを利用できません　アプリを立ち上げなおしてください", Toast.LENGTH_SHORT).show()
                     }
 
@@ -73,11 +74,9 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
                                 "位置情報の取得に成功しました"
                             }
                             android.location.LocationProvider.OUT_OF_SERVICE -> {
-                                locationManager.removeUpdates(this)
                                 "位置情報が取得できなくなりました。アプリを立ち上げなおしてください"
                             }
                             android.location.LocationProvider.TEMPORARILY_UNAVAILABLE -> {
-                                locationManager.removeUpdates(this)
                                 "位置情報が一時的に取得できていません"
                             }
                             else -> "おしゅし"
