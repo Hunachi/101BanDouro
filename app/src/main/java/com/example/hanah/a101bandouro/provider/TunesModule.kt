@@ -1,12 +1,12 @@
-package com.example.hanah.a101bandouro.dao
+package com.example.hanah.a101bandouro.provider
 
 import android.content.Context
 import android.util.Log
+import com.example.hanah.a101bandouro.dao.OrmaDatabase
+import com.example.hanah.a101bandouro.dao.Tunes
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.toSingle
 import io.reactivex.schedulers.Schedulers
-import org.antlr.v4.runtime.atn.SemanticContext
 import javax.inject.Singleton
 
 /**
@@ -75,7 +75,7 @@ class TunesModule(context: Context, val callback: Callback) {
             })
     }
 
-    //この手で全て消し去る(delete all)
+    /*この手で全て消し去る(delete all)*/
     fun delete() {
         Single.fromCallable { orma.deleteFromTunes().execute() }
             .subscribeOn(Schedulers.io())

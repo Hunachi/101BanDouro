@@ -7,7 +7,7 @@ import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.dao.Tunes
-import com.example.hanah.a101bandouro.dao.TunesModule
+import com.example.hanah.a101bandouro.provider.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
 import com.example.hanah.a101bandouro.model.Key
 import com.example.hanah.a101bandouro.provider.LocationProvider

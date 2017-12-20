@@ -24,14 +24,13 @@ import com.example.hanah.a101bandouro.view.MainFragment
 class MainViewModel(private val context: MainActivity, val callback: Callback)
     : BaseObservable(), MainFragment.Callback, LocationProvider.Callback {
 
-    private val tastesCount = 3 //一つの駅に対する曲の数（今のところ固定）
+    private val tastesCount = 3 /*一つの駅に対する曲の数（今のところ固定）*/
     private var point: Pair<Double, Double> = Pair(0.0, 0.0)
 
     companion object {
         @BindingAdapter("changeImage")
         @JvmStatic
         fun changeImage(view: ImageView, playingMusic: Boolean) {
-            Log.d("絵", "変更")
             if (playingMusic) {
                 Glide.with(view).load(R.drawable.porse_play).into(view)
             } else {
@@ -75,18 +74,17 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
         }
 
     fun onClickMusicStartButton(view: View) {
-        playingMusic = if (!playingMusic) {
+        if (!playingMusic) {
             /*music start(((o(*ﾟ▽ﾟ*)o)))*/
             callback.getFragmentInstance().run {
                 Log.d("座標", point.toString())
                 getNearStation(pointX = point.first, pointY = point.second, tasteful = count)
             }
-            true
         } else {
             /*music stop(੭ु´･ω･`)੭ु⁾⁾*/
             callback.getFragmentInstance().stopMusic()
-            false
         }
+        playingMusic = !playingMusic
     }
 
     fun onClickTasteUpButton(view: View) {

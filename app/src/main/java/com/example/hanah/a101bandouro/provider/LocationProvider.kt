@@ -52,7 +52,6 @@ class LocationProvider(val context: MainActivity, val callback: Callback) {
     }
 
     private fun startLocationManager() {
-        //位置情報の取得が許可されていた場合
         if (checkPermission())
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,

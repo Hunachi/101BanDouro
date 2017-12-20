@@ -9,7 +9,7 @@ import android.widget.Toast
 import com.example.hanah.a101bandouro.Adapter.ItemListAdapter
 import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.dao.Tunes
-import com.example.hanah.a101bandouro.dao.TunesModule
+import com.example.hanah.a101bandouro.provider.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityListBinding
 import com.example.hanah.a101bandouro.model.MemoryItem
 import com.nifty.cloud.mb.core.NCMBException
@@ -24,7 +24,7 @@ import java.io.FileOutputStream
 class ListActivity : AppCompatActivity(), TunesModule.Callback {
 
     private lateinit var binding: ActivityListBinding
-    private val mediaPlayer: MediaPlayer = MediaPlayer()
+    private val mediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +87,7 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
         }
     }
 
-    //errorが起きた際に呼ばれる
+    /*errorが起きた際に呼ばれる*/
     override fun error() {
         Toast.makeText(this, "何かしらだめだったぴよ", Toast.LENGTH_SHORT).show()
     }
