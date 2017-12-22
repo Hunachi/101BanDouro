@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.hanah.a101bandouro.BR
 import com.example.hanah.a101bandouro.R
-import com.example.hanah.a101bandouro.useCase.model.MemoryItem
+import com.example.hanah.a101bandouro.model.MemoryItem
 
 class ItemListAdapter(private val context: Context, private val list: MutableList<MemoryItem>, private val callback: (String) -> Unit)
     : RecyclerView.Adapter<ItemListAdapter.ViewHolder>() {

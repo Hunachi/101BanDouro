@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro.presentation.viewModel
+package com.example.hanah.a101bandouro.viewModel
 
 import android.content.Intent
 import android.databinding.BaseObservable
@@ -11,10 +11,10 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.hanah.a101bandouro.BR
 import com.example.hanah.a101bandouro.R
-import com.example.hanah.a101bandouro.useCase.provider.LocationProvider
-import com.example.hanah.a101bandouro.presentation.view.ListActivity
-import com.example.hanah.a101bandouro.presentation.view.MainActivity
-import com.example.hanah.a101bandouro.presentation.view.MainPresenter
+import com.example.hanah.a101bandouro.provider.LocationProvider
+import com.example.hanah.a101bandouro.view.ListActivity
+import com.example.hanah.a101bandouro.view.MainActivity
+import com.example.hanah.a101bandouro.provider.MainPresenter
 
 /**
  * 🍣 Created by hanah on 2017/12/17.

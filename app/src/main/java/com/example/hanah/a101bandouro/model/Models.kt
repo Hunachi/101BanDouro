@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro.useCase.model
+package com.example.hanah.a101bandouro.model
 
 /**
  * Created by hanah on 2017/11/11.
@@ -11,7 +11,7 @@ data class Result(
 data class ResultSet(
         val apiVersion: String,
         val engineVersion: String,
-        val Point: com.example.hanah.a101bandouro.useCase.model.Point
+        val Point: com.example.hanah.a101bandouro.model.Point
 )
 
 data class Point(

@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro.presentation.view
+package com.example.hanah.a101bandouro.view
 
 import android.databinding.DataBindingUtil
 import android.media.MediaPlayer
@@ -8,10 +8,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
 import com.example.hanah.a101bandouro.Adapter.ItemListAdapter
 import com.example.hanah.a101bandouro.R
-import com.example.hanah.a101bandouro.useCase.dao.Tunes
-import com.example.hanah.a101bandouro.useCase.provider.TunesModule
+import com.example.hanah.a101bandouro.dao.Tunes
+import com.example.hanah.a101bandouro.provider.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityListBinding
-import com.example.hanah.a101bandouro.useCase.model.MemoryItem
+import com.example.hanah.a101bandouro.model.MemoryItem
 import com.nifty.cloud.mb.core.NCMBException
 import com.nifty.cloud.mb.core.NCMBFile
 import java.io.File

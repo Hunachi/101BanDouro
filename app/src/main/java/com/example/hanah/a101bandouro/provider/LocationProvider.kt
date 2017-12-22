@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro.useCase.provider
+package com.example.hanah.a101bandouro.provider
 
 import android.Manifest
 import android.content.Context
@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
 import android.widget.Toast
-import com.example.hanah.a101bandouro.presentation.view.MainActivity
+import com.example.hanah.a101bandouro.view.MainActivity
 import javax.inject.Singleton
 
 /**

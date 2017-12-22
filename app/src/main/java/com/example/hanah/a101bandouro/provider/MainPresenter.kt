@@ -1,8 +1,8 @@
-package com.example.hanah.a101bandouro.presentation.view
+package com.example.hanah.a101bandouro.provider
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.example.hanah.a101bandouro.useCase.client.ServerClient
+import com.example.hanah.a101bandouro.client.ServerClient
 import com.nifty.cloud.mb.core.NCMBException
 import com.nifty.cloud.mb.core.NCMBFile
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import com.example.hanah.a101bandouro.useCase.provider.TunesModule
+import com.example.hanah.a101bandouro.view.MainActivity
 
 /**
  * Created by hanah on 2017/11/11.
@@ -22,7 +22,7 @@ class MainPresenter(private val context: MainActivity, val callback: Callback) {
 
     fun getNearStation(pointX: Double, pointY: Double, tasteful: Int) {
         var newStation: String
-        val client = ServerClient(com.example.hanah.a101bandouro.useCase.model.Key.eki)
+        val client = ServerClient(com.example.hanah.a101bandouro.model.Key.eki)
         client
             .findStation(pointY, pointX)
             .subscribeOn(Schedulers.io())

@@ -1,10 +1,12 @@
-package com.example.hanah.a101bandouro.useCase.client
+package com.example.hanah.a101bandouro.client
 
 /**
  * Created by hanah on 2017/11/11.
  */
-import com.example.hanah.a101bandouro.useCase.model.Result
+import android.graphics.Point
+import com.example.hanah.a101bandouro.model.Result
 import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.reactivex.Observable
 import okhttp3.MediaType
@@ -17,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
+import java.util.*
 
 /**
  * Created by hanah on 2017/11/11.

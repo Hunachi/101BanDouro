@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro.presentation.view
+package com.example.hanah.a101bandouro.view
 
 
 import android.os.Bundle
@@ -6,12 +6,13 @@ import com.nifty.cloud.mb.core.NCMB
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import com.example.hanah.a101bandouro.R
-import com.example.hanah.a101bandouro.useCase.dao.Tunes
-import com.example.hanah.a101bandouro.useCase.provider.TunesModule
+import com.example.hanah.a101bandouro.dao.Tunes
+import com.example.hanah.a101bandouro.provider.TunesModule
 import com.example.hanah.a101bandouro.databinding.ActivityMainBinding
-import com.example.hanah.a101bandouro.useCase.model.Key
-import com.example.hanah.a101bandouro.useCase.provider.LocationProvider
-import com.example.hanah.a101bandouro.presentation.viewModel.MainViewModel
+import com.example.hanah.a101bandouro.model.Key
+import com.example.hanah.a101bandouro.provider.LocationProvider
+import com.example.hanah.a101bandouro.provider.MainPresenter
+import com.example.hanah.a101bandouro.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity(), MainViewModel.Callback, TunesModule.Callback {
 
