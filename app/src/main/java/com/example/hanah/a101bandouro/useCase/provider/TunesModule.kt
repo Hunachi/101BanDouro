@@ -1,9 +1,9 @@
-package com.example.hanah.a101bandouro.provider
+package com.example.hanah.a101bandouro.useCase.provider
 
 import android.content.Context
 import android.util.Log
-import com.example.hanah.a101bandouro.dao.OrmaDatabase
-import com.example.hanah.a101bandouro.dao.Tunes
+import com.example.hanah.a101bandouro.useCase.dao.OrmaDatabase
+import com.example.hanah.a101bandouro.useCase.dao.Tunes
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

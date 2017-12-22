@@ -1,4 +1,4 @@
-package com.example.hanah.a101bandouro.dao
+package com.example.hanah.a101bandouro.useCase.dao
 
 import com.github.gfx.android.orma.annotation.Column
 import com.github.gfx.android.orma.annotation.PrimaryKey
