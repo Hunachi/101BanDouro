@@ -1,12 +1,10 @@
 package com.example.hanah.a101bandouro.viewModel
 
-import android.content.Context
 import android.content.Intent
 import android.databinding.BaseObservable
 import android.databinding.Bindable
 import android.databinding.BindingAdapter
 import android.support.v4.content.ContextCompat.startActivity
-import android.telecom.Call
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -16,13 +14,13 @@ import com.example.hanah.a101bandouro.R
 import com.example.hanah.a101bandouro.provider.LocationProvider
 import com.example.hanah.a101bandouro.view.ListActivity
 import com.example.hanah.a101bandouro.view.MainActivity
-import com.example.hanah.a101bandouro.view.MainFragment
+import com.example.hanah.a101bandouro.view.MainPresenter
 
 /**
  * 🍣 Created by hanah on 2017/12/17.
  */
 class MainViewModel(private val context: MainActivity, val callback: Callback)
-    : BaseObservable(), MainFragment.Callback, LocationProvider.Callback {
+    : BaseObservable(), MainPresenter.Callback, LocationProvider.Callback {
 
     private val tastesCount = 3 /*一つの駅に対する曲の数（今のところ固定）*/
     private var point: Pair<Double, Double> = Pair(0.0, 0.0)
@@ -136,7 +134,7 @@ class MainViewModel(private val context: MainActivity, val callback: Callback)
 
     interface Callback {
         /*fragmentがuninitializedになるのを防ぎたい,*/
-        fun getFragmentInstance(): MainFragment
+        fun getFragmentInstance(): MainPresenter
     }
 
 }

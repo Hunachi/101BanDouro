@@ -15,7 +15,7 @@ import com.example.hanah.a101bandouro.provider.TunesModule
 /**
  * Created by hanah on 2017/11/11.
  */
-class MainFragment(private val context: MainActivity, val callback: Callback) {
+class MainPresenter(private val context: MainActivity, val callback: Callback) {
 
     private var mediaPlayer: MediaPlayer = MediaPlayer()
     private var station = "hoge"
