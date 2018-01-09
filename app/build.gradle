@@ -35,7 +35,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // dagger
-    implementation 'com.google.dagger:dagger:2.9'
+    implementation 'com.google.dagger:dagger:2.12'
 
     //rx
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -51,7 +51,7 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
 
     //gson
-    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.google.code.gson:gson:2.8.1'
 
     //二フクラ
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -62,7 +62,7 @@ dependencies {
     kapt 'com.android.databinding:compiler:3.0.1'
 
     //orma
-    kapt 'com.google.dagger:dagger-compiler:2.9'
+    kapt 'com.google.dagger:dagger-compiler:2.12'
     kapt 'com.github.gfx.android.orma:orma-processor:4.2.5'
     compile 'com.github.gfx.android.orma:orma:4.2.5'
 

@@ -38,7 +38,7 @@ class MainPresenter(private val context: MainActivity, val callback: Callback) {
                 }
             }, {
                 /*error続きの場合はそのまま.*/
-                if (station.isNotBlank() && mediaPlayer.isPlaying) {
+                if (station.isNotBlank() && !mediaPlayer.isPlaying) {
                     station = ""
                     it.printStackTrace()
                     /*さんぽを流す*/
@@ -56,33 +56,37 @@ class MainPresenter(private val context: MainActivity, val callback: Callback) {
         } else {
             NCMBFile(station + tasteful.toString() + ".mp3")
         }
-        file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
+        try {
+            file.fetchInBackground({ bytes: ByteArray?, ncmbException: NCMBException? ->
 
-            /*データベースに曲が存在しなかったらさんぽ*/
-            if (bytes == null) {
-                playStationMusic("", 0)
-                return@fetchInBackground
-            }
-            //titleをdbに保存
-            if (station.isNotBlank()) {
-                callback.setText("$station 付近", "$station の $tasteful　曲目")
-                TunesModule(context, context).searchThenInsert("$station$tasteful")
-            }
-            val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
-            tempMp3.deleteOnExit()
-            FileOutputStream(tempMp3).apply {
-                write(bytes)
-                close()
-            }
-            mediaPlayer.apply {
-                pause()
-                reset()
-                setDataSource(FileInputStream(tempMp3).fd)
-                isLooping = true
-                prepare()
-                start()
-            }
-        })
+                /*データベースに曲が存在しなかったらさんぽ*/
+                if (bytes == null) {
+                    playStationMusic("", 0)
+                    return@fetchInBackground
+                }
+                //titleをdbに保存
+                if (station.isNotBlank()) {
+                    callback.setText("$station 付近", "$station の $tasteful　曲目")
+                    TunesModule(context, context).searchThenInsert("$station$tasteful")
+                }
+                val tempMp3 = File.createTempFile(station + tasteful.toString() + "hogehoge", ".mp3", context.cacheDir)
+                tempMp3.deleteOnExit()
+                FileOutputStream(tempMp3).apply {
+                    write(bytes)
+                    close()
+                }
+                mediaPlayer.apply {
+                    pause()
+                    reset()
+                    setDataSource(FileInputStream(tempMp3).fd)
+                    isLooping = true
+                    prepare()
+                    start()
+                }
+            })
+        }catch (e: Exception){
+            Log.d("hoge","hoge")
+        }
     }
 
     fun stopMusic() {

@@ -87,7 +87,6 @@ class ListActivity : AppCompatActivity(), TunesModule.Callback {
         }
     }
 
-    /*errorが起きた際に呼ばれる*/
     override fun error() {
         Toast.makeText(this, "何かしらだめだったぴよ", Toast.LENGTH_SHORT).show()
     }
